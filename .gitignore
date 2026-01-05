@@ -1,0 +1,48 @@
+# ----------------------------
+# Editors / IDEs
+# ----------------------------
+
+# Visual Studio
+.vs/
+
+# Visual Studio Code
+.vscode/
+
+
+# ----------------------------
+# Build files
+# ----------------------------
+
+# CMake build directories
+build/
+out/
+cmake-build-*/
+
+# Ninja / Makefiles
+*.ninja
+*.ninja_deps
+*.ninja_log
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# ----------------------------
+# Compiled output
+# ----------------------------
+
+*.o
+*.obj
+*.lo
+*.la
+*.a
+*.so
+*.dll
+*.exe
+*.pdb
+
+# Sanitizer output
+*.sancov
+
+# Windows
+Thumbs.db
