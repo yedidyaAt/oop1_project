@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 project(oop1_ex04)
 
 
-set(MY_AUTHORS "Uri_Tauber")
+set(MY_AUTHORS "yadidya-atlan")
 
 include(cmake/CompilerSettings.cmake)
 
@@ -29,10 +29,14 @@ endif()
 # --- Linux: Do nothing — CMake will automatically search system paths
 
 # Now find SFML 3
-find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
+#find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
+# שים לב שהוספתי את audio לרשימת ה-COMPONENTS
+#find_package(SFML 3.0 COMPONENTS graphics window system audio REQUIRED)
+find_package(SFML 3.0 COMPONENTS Graphics Window System Audio REQUIRED)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
     SFML::Graphics
+    SFML::Audio
     SFML::Window
     SFML::System
 )

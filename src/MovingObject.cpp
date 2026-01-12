@@ -1,13 +1,18 @@
 #include "MovingObject.h"
 
-MovingObject::MovingObject(const sf::Vector2f& position, Symbol symbol, bool isActive)
-                          :Object(position,symbol,isActive)
+MovingObject::MovingObject(const sf::Vector2f& position, ObjectSymbol symbol, bool isActive)
+  :Object(position, symbol, isActive)
 {
-  m_startPos = position;
 }
 
-void MovingObject::reset()
+Layer MovingObject::getLayer()
 {
-  setPos(m_startPos);
+    return Layer::DYNAMICS;
 }
+
+sf::Vector2f MovingObject::getVelocity(const sf::Vector2f& dir, float speed, float deltaTime) const
+{
+  return dir*speed*deltaTime;
+}
+
 

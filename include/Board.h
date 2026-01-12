@@ -10,11 +10,15 @@
 class Board
 {
 public:
-
-  void draw()const;
-
   void loadFromData(const std::vector<std::string>& data);
-  const std::vector<std::vector<std::unique_ptr<Object>>>& getBoard()const;
+
+  ObjectSymbol getSymbolAt(const sf::Vector2f& pos) const;
+  const std::vector<std::vector<std::unique_ptr<Object>>>& getBoardObjects()const;
+  sf::Vector2f getSizeBoard()const;
+
+  bool isHitSolid(const sf::FloatRect& rec)const;
+  bool isSolid(ObjectSymbol sym)const;
+  bool isSolid(const sf::Vector2f& pos)const;
 
 private:
   void setSizeBoard(const std::vector<std::string>& data);

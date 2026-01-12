@@ -1,3 +1,4 @@
+#pragma once
 #include "MovingObject.h"
 #include <SFML/System/Vector2.hpp>
 
@@ -10,6 +11,6 @@ public:
   void update(const Level&, float deltaTime) override;
 
 private:
-
+  void move(const Level& level, float deltaTime);
 
 };
