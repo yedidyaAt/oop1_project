@@ -6,6 +6,18 @@ class DumbEnemy: public Enemy
 public:
 	DumbEnemy(const sf::Vector2f& position, bool isActive = true);
 	
-	void update(const Level&, float deltaTime) override;
+	void update(float deltaTime) override;
+
+  void handleCollision(Object& obj)  override;
+  void handleCollision(Player& obj)  override;
+  void handleCollision(Enemy& obj)   override;
+  void handleCollision(Coin& obj)    override;
+  void handleCollision(Wall& obj)    override;
+  void handleCollision(Ground& obj)  override;
+  void handleCollision(Ladder& obj)  override;
+  void handleCollision(Rope& obj)    override;
+
+  sf::Vector2f getDirection()override ;
+
 };
 

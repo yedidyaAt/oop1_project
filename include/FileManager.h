@@ -13,7 +13,7 @@ public:
   std::vector<std::string> getLevel(int levelIndex) const;
 
   int getTotalLevels() const;
-  sf::Vector2f getSizeBoard(int levelIndex) const;
+  sf::Vector2u getSizeBoard(int levelIndex) const;
 private:
   void scanFileForLevels();
   

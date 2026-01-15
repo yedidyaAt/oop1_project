@@ -1,7 +1,6 @@
-#include "WindowManger.h"
+#include "WindowManager.h"
 #include "FileManager.h"
 #include "Level.h"
-#include "Render.h"
 #include <iostream>
 #include "io.h"
 #include "Resources.h"
@@ -10,47 +9,44 @@
 #include <thread> // חובה בשביל sleep_for
 #include <chrono> // חובה בשביל הגדרת הזמן
 #include "SoundManager.h"
-#include "GameControler.h"
+#include "LevelManager.h"
 
 
 int main()
 {
- /*
-  WindowManager window;
-  Resources::instance().loadResources();
-  SoundManager::instance();
-  FileManager fm;
-  Level level;
-  Render::instance();
+  //WindowManager window;
+  //Resources::instance().loadResources();
+  //SoundManager::instance();
+  //Render::instance();
+  //FileManager fm;
+  //Level level;
 
-  sf::Clock clock;
-    system("cls");
-    level.setLevel(fm.getLevel(0));
-    
-    window.updateGameView(level);
+  //sf::Clock clock;
+  //  system("cls");
+  //  level.setLevel(fm.getLevel(0));
+  //  
+  //  window.updateGameView(level);
 
-    while (window.isOpen())
-    {
-      while (const auto& event = window.pollEvent())
-      {
-        if (event->is<sf::Event::Closed>())
-          window.close();
-        
-        else if (const auto& resized = event->getIf<sf::Event::Resized>())
-        {
-          window.updateGameView(level,resized);
-        }
-      }
+  //  while (window.isOpen())
+  //  {
+  //    while (const auto& event = window.pollEvent())
+  //    {
+  //      if (event->is<sf::Event::Closed>())
+  //        window.close();
+  //      
+  //      else if (const auto& resized = event->getIf<sf::Event::Resized>())
+  //      {
+  //        window.updateGameView(level,resized);
+  //      }
+  //    }
 
-      level.run(clock);
+  //    window.clear();
+  //    level.run(window);
+  //    window.display();
+  //  }
+  //  
 
-      window.clear();
-      Render::instance().draw(window, level);
-      window.display();
-    }
-    */
-
-  GameControler().run();
+  LevelManager().run();
   
   
 

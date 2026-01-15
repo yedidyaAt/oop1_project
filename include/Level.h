@@ -7,50 +7,39 @@
 #include "Board.h"
 #include "Const.h"
 
-class IGameEvents;
+class WindowManager;
 
 class Level
 {
 public:
   Level() = default;
-  Level(IGameEvents* eventsHandler);
 
 
-  void run(sf::Clock& clock);
+  void run(WindowManager& window);
 
-  sf::Vector2f getPlayerPos() const;
+  void setLevel(std::vector<std::string> board, const sf::Vector2u& boardSize);
 
-  void setLevel(std::vector<std::string> board);
-  void resetPositions();
-
-
-  bool hasFloorBelow(const sf::FloatRect& rect) const;
-  bool isValidState(const sf::FloatRect& rect) const;
-  sf::Vector2f calculateShift(const sf::FloatRect& failedRect, const sf::Vector2f& stepDir) const;
-  sf::Vector2f getMoveTo(const sf::FloatRect& curRect, const sf::Vector2f& totalVelocity, float deltaTime) const;
-
-  const Board& getBoard()const;
-  const std::vector<std::unique_ptr<Object>>& getObject()const;
-  float getRows()const;
   float getCols()const;
-
-  int coinLeft()const;
+  float getRows()const;
+  sf::Vector2u getSizeLevel()const;
 private:
+  void updateLevel();
+  void updateObject();
+  void handlColisions();
+  void handlColision(Object& curObj);
+  void drawLevel(sf::RenderWindow& window);
+  void drawObj(sf::RenderWindow& window, const std::vector<std::unique_ptr<Object>>& objects)const;
+  
+  Player* getPlayer()const;
+  const std::vector<std::unique_ptr<Object>>& getStaticObj()const;
+  const std::vector<std::unique_ptr<Object>>& getMovableObj()const;
+
+  void resetPositions();
   bool createEntity(char tile,const sf::Vector2f& pos);
   void sortByLayer();
-  void updateObject(float deltaTime);
-  void handlColisions();
-  void processCollision(Player* player,Object* obj);
 
-  void handlPlayerVsEnemy();
-  void handlPlayerVsCoin(Object* obj);
-  Player* getPlayer()const;
-  bool isOnLadder(const sf::FloatRect& rect) const;
-
-  void takeCoin();
-
-  IGameEvents* m_eventsHandler = nullptr;
-  int m_coinCnt = 0;
-  std::vector<std::unique_ptr<Object>> m_entities;
-  Board m_board;
+  std::vector<std::unique_ptr<Object>> m_movableObj;
+  std::vector<std::unique_ptr<Object>> m_staticObj;
+  sf::Vector2u m_sizeLevel;
+  sf::Clock m_clock;
 };

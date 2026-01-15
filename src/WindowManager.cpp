@@ -1,4 +1,4 @@
-#include "WindowManger.h"
+#include "WindowManager.h"
 #include "Const.h"
 #include "Level.h"
 

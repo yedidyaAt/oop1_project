@@ -8,7 +8,6 @@ class WindowManager : public sf::RenderWindow
 public:
   WindowManager();
 
-  // הפונקציות המקוריות שלך
   void updateGameView(const Level& level, const sf::Event::Resized* resized);
   void updateGameView(const Level& level);
 

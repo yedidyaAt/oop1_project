@@ -3,6 +3,16 @@
 #include <vector>
 #include <string_view>
 
+
+struct LevelData
+{
+  int m_curLevel;
+  int m_life;
+  int m_score;
+  float m_timer;
+};
+
+
 enum class FontType
 {
   Damned
@@ -63,7 +73,8 @@ enum class SoundType {
     namespace Physics 
     {
       inline constexpr float SPEED = 200.f;
-      inline constexpr float GRAVITY = 1.f;
+      inline constexpr float GRAVITY = 500.f;
+      inline constexpr float LADDER_SNAP_THRESHOLD = 0.2f;
     }
     namespace Bar
     {

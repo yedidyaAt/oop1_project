@@ -81,12 +81,13 @@ int FileManager::getTotalLevels() const {
   return static_cast<int>(m_levelOffsets.size());
 }
 
-sf::Vector2f FileManager::getSizeBoard(int levelIndex) const
+sf::Vector2u FileManager::getSizeBoard(int levelIndex) const
 {
   auto board = getLevel(levelIndex);
 
   if (!board.size())
-    return { 0.f,0.f };
+    return { 0,0 };
 
-  return sf::Vector2f{ static_cast<float>(board[0].size()), static_cast<float>(board.size()) };
+  return sf::Vector2u{ static_cast<unsigned int>(board[0].size()), 
+                       static_cast<unsigned int>(board.size()) };
 }
