@@ -5,7 +5,7 @@
 class Coin: public StaticObject
 {
 public:
-  Coin(const sf::Vector2f& position, bool isActive = true);
+  Coin(const sf::Vector2f& position,int value = 0,bool isActive = true);
 
   void handleCollision(Object& obj)  override;
   void handleCollision(Player& obj)  override;
@@ -16,5 +16,7 @@ public:
   void handleCollision(Ladder& obj)  override;
   void handleCollision(Rope& obj)    override;
 
+  int getValue()const;
 private:
+  int m_value;
 };

@@ -4,7 +4,6 @@
 #include "Object.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "Board.h"
 #include "Const.h"
 
 class WindowManager;
@@ -12,12 +11,12 @@ class WindowManager;
 class Level
 {
 public:
-  Level() = default;
+  Level();
 
 
   void run(WindowManager& window);
 
-  void setLevel(std::vector<std::string> board, const sf::Vector2u& boardSize);
+  void setLevel(std::vector<std::string> board, LevelData& levelData);
 
   float getCols()const;
   float getRows()const;
@@ -29,17 +28,18 @@ private:
   void handlColision(Object& curObj);
   void drawLevel(sf::RenderWindow& window);
   void drawObj(sf::RenderWindow& window, const std::vector<std::unique_ptr<Object>>& objects)const;
-  
+
   Player* getPlayer()const;
   const std::vector<std::unique_ptr<Object>>& getStaticObj()const;
   const std::vector<std::unique_ptr<Object>>& getMovableObj()const;
 
   void resetPositions();
-  bool createEntity(char tile,const sf::Vector2f& pos);
-  void sortByLayer();
+  bool createEntity(char tile, const sf::Vector2f& pos);
 
+  std::unique_ptr<Player> m_player;
   std::vector<std::unique_ptr<Object>> m_movableObj;
   std::vector<std::unique_ptr<Object>> m_staticObj;
-  sf::Vector2u m_sizeLevel;
   sf::Clock m_clock;
+
+  LevelData* m_levelData;
 };

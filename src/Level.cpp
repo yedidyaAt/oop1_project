@@ -1,11 +1,15 @@
 #include <SFML/System/Vector2.hpp>
 #include "Level.h"
-#include "DumbEnemy.h"
-#include "SmartEnemy.h"
+#include "StaticObject.h"
+#include "Enemy.h"
 #include <iostream> // בשביל הדיבאג
 #include "GameBar.h"
 #include "WindowManager.h"
+#include "Factory.h"
 
+Level::Level():m_levelData(nullptr)
+{
+}
 
 void Level::run(WindowManager& window)
 {
@@ -41,9 +45,9 @@ void Level::run(WindowManager& window)
   }
 }
 
-void Level::setLevel(std::vector<std::string> board,const sf::Vector2u& boardSize)
+void Level::setLevel(std::vector<std::string> board, LevelData& levelData)
 {
-  m_sizeLevel = boardSize;
+  m_levelData = &levelData;
   // reset 
   m_movableObj.clear();
 
@@ -51,73 +55,60 @@ void Level::setLevel(std::vector<std::string> board,const sf::Vector2u& boardSiz
   {
     for (int col = 0; col < board[row].size(); ++col)
     {
-      char& tile = board[row][col]; 
-      sf::Vector2f pos(static_cast<float>(col)*UiConfig::TILE_SIZE, static_cast<float>(row)*UiConfig::TILE_SIZE);
+      char& tile = board[row][col];
+      sf::Vector2f pos(
+        static_cast<float>(col) * UiConfig::TILE_SIZE,
+        static_cast<float>(row) * UiConfig::TILE_SIZE
+      );
 
-      if (createEntity(tile, pos)) {
-        tile = ' '; 
-      }
+      createEntity(tile, pos);
     }
   }
-
-  //sortByLayer();
+   
+  m_levelData->m_coinCreated = Factory::instance().getCreatedCnt(ObjectSymbol::COIN);
+  m_player->setCoinCreated(m_levelData->m_coinCreated);
 }
 
 void Level::drawLevel(sf::RenderWindow& window)
 {
   drawObj(window, getStaticObj());
   drawObj(window, getMovableObj());
+  m_player->draw(window);
 }
 
 bool Level::createEntity(char tile,const sf::Vector2f& pos)
 {
   ObjectSymbol symbol = static_cast<ObjectSymbol>(tile);
 
-  switch (symbol)
+  auto obj = Factory::instance().creator(symbol,pos,*m_levelData);
+
+  if (auto player = dynamic_cast<Player*>(obj.get()))
   {
-  case ObjectSymbol::PLAYER:
-    m_movableObj.push_back(std::make_unique<Player>(pos));
+    obj.release();
+    m_player.reset(player);
     return true;
-
-  case ObjectSymbol::ENEMY:
-    m_movableObj.push_back(std::make_unique<DumbEnemy>(pos));
-    return true;
-
-    // --- איסוף ---
-  case ObjectSymbol::COIN:
-    //m_coinCnt++; // עדכון המונה הפנימי של הלבל
-    // השינוי החשוב: יצירת מחלקת Coin ייעודית שיודעת להיאסף
-    m_staticObj.push_back(std::make_unique<Coin>(pos));
-    return true;
-
-    // --- סביבה סטטית (עכשיו לכל אחד מחלקה משלו) ---
-  case ObjectSymbol::WALL:
-    m_staticObj.push_back(std::make_unique<Wall>(pos));
-    return true;
-
-  case ObjectSymbol::GROUND:
-    m_staticObj.push_back(std::make_unique<Ground>(pos));
-    return true;
-
-  case ObjectSymbol::LADDER:
-    m_staticObj.push_back(std::make_unique<Ladder>(pos));
-    return true;
-
-  case ObjectSymbol::ROPE:
-    m_staticObj.push_back(std::make_unique<Rope>(pos));
-    return true;
-
-    // --- מקרים של התעלמות ---
-  case ObjectSymbol::EMPTY:
-  case ObjectSymbol::NONE:
-  default:
-    return false; // לא נוצר שום אובייקט (אוויר)
   }
+  else if (auto enemy = dynamic_cast<Enemy*>(obj.get()))
+  {
+    obj.release();
+    m_movableObj.push_back(std::unique_ptr<Enemy>(enemy));
+    return true;
+  }
+  else if(auto staticObj = dynamic_cast<StaticObject*>(obj.get()))
+  {
+    obj.release();
+    m_staticObj.push_back(std::unique_ptr<StaticObject>(staticObj));
+    return true;
+  }
+
+  return false;
 }
 
 void Level::updateObject()
 {
   const float deltaTime = m_clock.restart().asSeconds();
+
+  m_player->update(deltaTime);
 
   for (auto& object : m_movableObj)
     object->update(deltaTime);
@@ -125,6 +116,8 @@ void Level::updateObject()
 
 void Level::handlColisions()
 {
+  handlColision(*m_player.get());
+
   for (auto& obj : m_movableObj)
   {
     handlColision(*obj.get());
@@ -168,16 +161,6 @@ void Level::resetPositions()
     object->resetStartPos();
 }
 
-//no needs
-void Level::sortByLayer() 
-{
-  std::sort(m_movableObj.begin(), m_movableObj.end(),
-    [](const std::unique_ptr<Object>& a, const std::unique_ptr<Object>& b) 
-    { 
-      return a->getLayer() < b->getLayer();
-    });
-}
-
 Player* Level::getPlayer() const
 {
   for (const auto& obj : m_movableObj)
@@ -209,5 +192,11 @@ float Level::getRows() const
 
 sf::Vector2u Level::getSizeLevel() const
 {
-  return m_sizeLevel;
+  if(m_levelData)
+  return m_levelData->m_LevelSize;
+  else
+  {
+    std::cerr << "you dumb ass." << std::endl;
+    return sf::Vector2u();
+  }
 }

@@ -9,6 +9,9 @@
 #include "Coin.h"
 #include "Wall.h"
 
+
+
+
 SmartEnemy::SmartEnemy(const sf::Vector2f& position,bool isActive)
                       :Enemy(position, isActive){}
 

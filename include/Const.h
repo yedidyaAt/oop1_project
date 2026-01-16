@@ -4,15 +4,6 @@
 #include <string_view>
 
 
-struct LevelData
-{
-  int m_curLevel;
-  int m_life;
-  int m_score;
-  float m_timer;
-};
-
-
 enum class FontType
 {
   Damned
@@ -64,7 +55,6 @@ enum class SoundType {
     LADDER = 'H',
     ROPE = '-',
     EMPTY = ' ',
-    NONE = 'N',
   };
 
 
@@ -122,4 +112,16 @@ enum class SoundType {
     inline constexpr std::string_view SCORE_STR = "SCORE";
     inline constexpr std::string_view TIMER_STR = "TIMER";
 
+  };
+
+
+  struct LevelData
+  {
+    int m_curLevel = GameConfig::Bar::START_LEVEL;
+    int m_life = GameConfig::Bar::LIFE;
+    int m_score = GameConfig::Bar::SCORE;
+    float m_timer = GameConfig::Bar::TIMER_TIME;
+
+    int m_coinCreated = 0;
+    sf::Vector2u m_LevelSize;
   };

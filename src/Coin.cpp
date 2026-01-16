@@ -8,11 +8,22 @@
 #include "Ladder.h"
 #include "Rope.h"
 
-Coin::Coin(const sf::Vector2f& position,bool isActive)
+#include "Factory.h"
+#include <iostream>
+
+static bool registered = Factory::instance().registerType(ObjectSymbol::COIN,
+  [](const sf::Vector2f& pos, const LevelData& data)
+  {
+    int val = data.m_curLevel * GameConfig::Bar::COIN_SCORE;
+    return std::make_unique<Coin>(pos,val);
+  }
+);
+
+Coin::Coin(const sf::Vector2f& position,int value,bool isActive)
   :StaticObject(position,ObjectSymbol::COIN,isActive)
 {
+  m_value = value;
 }
-
 
 void Coin::handleCollision(Object& obj) 
 {
@@ -47,4 +58,9 @@ void Coin::handleCollision(Ladder & obj)
 void Coin::handleCollision(Rope & obj) 
 {
   //ignor
+}
+
+int Coin::getValue() const
+{
+  return m_value;
 }

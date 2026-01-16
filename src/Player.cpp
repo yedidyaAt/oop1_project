@@ -17,12 +17,21 @@
 static bool registered = Factory::instance().registerType(ObjectSymbol::PLAYER,
   [](const sf::Vector2f& pos, const LevelData& data) 
   {
-    return std::make_unique<Player>(pos);
+    PlayerPackage package;
+    package.m_coinLeft = data.m_coinCreated; // <- 0 //for initialstion
+    package.m_life = data.m_life;
+    package.m_score = data.m_score;
+    package.m_curLevel = data.m_curLevel;
+
+    return std::make_unique<Player>(pos,package);
   }
 );
 
-Player::Player(const sf::Vector2f& position, bool isActive)
-              :MovingObject(position,ObjectSymbol::PLAYER,isActive){}
+Player::Player(const sf::Vector2f& position, const PlayerPackage& package, bool isActive)
+              :MovingObject(position,ObjectSymbol::PLAYER,isActive)
+{
+  m_package = package;
+}
 
 void Player::update(float deltaTime)
 {
@@ -47,12 +56,13 @@ void Player::handleCollision(Player& obj)
 
 void Player::handleCollision(Enemy& obj)
 {
-  //obj.handlCollison(*this);
+  SoundManager::instance().playSound(SoundType::LIFE_LOST);
+  lifeLost();
 }
 
 void Player::handleCollision(Coin& obj)
 {
-  std::cout << "player take coin" << std::endl;
+  takeCoin(obj.getValue());
 }
 
 void Player::handleCollision(Wall& obj)
@@ -76,19 +86,36 @@ void Player::handleCollision(Rope& obj)
   handleRopeLogic(obj);
 }
 
-bool Player::isCoinTaked()
+void Player::setCoinCreated(int cnt)
 {
-  bool take = m_coinTaked;
-  m_coinTaked = false;
-
-  return take;
+  m_package.m_coinLeft = cnt;
 }
 
-void Player::coinTaked()
+void Player::lifeLost()
 {
-  m_coinTaked = true;
+  m_package.m_life--;
+  std::cout << m_package.m_life << std::endl;
 }
 
+void Player::takeCoin(int value)
+{
+  m_package.m_coinLeft--;
+  addScore(value);
+  addScroeCommplete();
+}
 
+void Player::addScore(int value)
+{
+  m_package.m_score += value;
+}
+
+void Player::addScroeCommplete()
+{
+  if (!m_package.m_coinLeft)
+  {
+    int score = m_package.m_curLevel * GameConfig::Bar::COMPLETE_LEVEL_SCORE;
+    addScore(score);
+  }
+}
 
 

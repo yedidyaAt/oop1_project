@@ -8,11 +8,19 @@
 #include "Enemy.h"
 #include "Wall.h"
 
+#include "Factory.h"
+
+static bool registered = Factory::instance().registerType(ObjectSymbol::ROPE,
+  [](const sf::Vector2f& pos, const LevelData& data)
+  {
+    return std::make_unique<Rope>(pos);
+  }
+);
+
 Rope::Rope(const sf::Vector2f& position, bool isActive)
   :StaticObject(position, ObjectSymbol::ROPE, isActive)
 {
 }
-
 
 void Rope::handleCollision(Object& obj) 
 {
@@ -24,7 +32,7 @@ void Rope::handleCollision(Player & obj)
 }
 void Rope::handleCollision(Enemy & obj) 
 {
-
+  obj.handleCollision(*this);
 }
 void Rope::handleCollision(Coin & obj) 
 {

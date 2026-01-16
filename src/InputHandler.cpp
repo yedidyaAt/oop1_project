@@ -23,3 +23,10 @@ Action InputHandler::getActionInput()
 
   return Action::NONE;
 }
+
+sf::Vector2f InputHandler::getRandomInput()
+{
+  sf::Vector2f arr[4] = { {-1,0},{1,0},{0,-1},{0,1} };
+  auto geussing = std::rand() % 4;
+  return arr[geussing];
+}

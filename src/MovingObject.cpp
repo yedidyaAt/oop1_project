@@ -8,6 +8,7 @@ MovingObject::MovingObject(const sf::Vector2f& position, ObjectSymbol symbol, bo
 {
 }
 
+
 Layer MovingObject::getLayer()
 {
     return Layer::DYNAMICS;
@@ -230,7 +231,6 @@ void MovingObject::resolveOverlap(Object& obj)
   {
     if (overlap->size.y < cornerTolerance)
     {
-      std::cout << "i was here: " << __LINE__<< std::endl;
       // החלקה: דחיפה עדינה ב-Y במקום עצירה ב-X
       if (pBounds.position.y < oBounds.position.y)
         setPos({ getPos().x, getPos().y - overlap->size.y }); // החלקה למעלה

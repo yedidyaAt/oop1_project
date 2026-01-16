@@ -17,8 +17,12 @@ public:
   std::unique_ptr<Object> creator(ObjectSymbol symbol, const sf::Vector2f& pos, const LevelData& data);
 
   bool registerType(ObjectSymbol symbol, CreatorFunc func);
+  
+  int getCreatedCnt(ObjectSymbol symbol);
+  void resetCounts();
 private:
   std::map<ObjectSymbol, CreatorFunc>& getMap();
+  std::map<ObjectSymbol, int>& getCntMap();
   
   Factory() = default;
   Factory(Factory&) = delete;

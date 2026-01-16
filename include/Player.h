@@ -4,9 +4,17 @@
 
 #include "MovingObject.h"
 
+struct PlayerPackage
+{
+  int m_life     = 0 ;
+  int m_score    = 0 ;
+  int m_coinLeft = 0;
+  int m_curLevel = 0;
+};
+
 class Player : public MovingObject {
 public:
-  Player(const sf::Vector2f& position, bool isActive = true);
+  Player(const sf::Vector2f& position,const PlayerPackage& package ,bool isActive = true);
 
   void update(float deltaTime) override;
 
@@ -21,9 +29,13 @@ public:
   void handleCollision(Ladder & obj)  override;
   void handleCollision(Rope & obj)    override;
   
+  void setCoinCreated(int cnt);
+  void lifeLost();
 protected:
-  bool isCoinTaked();
-  void coinTaked();
+  void takeCoin(int value);
+
 private:
-  bool m_coinTaked = false;
+  void addScore(int value);
+  void addScroeCommplete();
+  PlayerPackage m_package;
 };

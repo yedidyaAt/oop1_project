@@ -8,6 +8,16 @@
 #include "Player.h"
 #include "Enemy.h"
 
+#include "Factory.h"
+
+static bool registered = Factory::instance().registerType(ObjectSymbol::WALL,
+  [](const sf::Vector2f& pos, const LevelData& data)
+  {
+    return std::make_unique<Wall>(pos);
+  }
+);
+
+
 Wall::Wall(const sf::Vector2f& position, bool isActive)
   :StaticObject(position, ObjectSymbol::WALL,isActive)
 {
@@ -23,7 +33,7 @@ void Wall::handleCollision(Player & obj)
 }
 void Wall::handleCollision(Enemy & obj) 
 {
-
+  obj.handleCollision(*this);
 }
 void Wall::handleCollision(Coin & obj) 
 {
@@ -31,7 +41,6 @@ void Wall::handleCollision(Coin & obj)
 }
 void Wall::handleCollision(Wall & obj)
 {
-//ignor
 }
 void Wall::handleCollision(Ground & obj) 
 {

@@ -15,4 +15,5 @@ private:
   Level m_level;
   FileManager m_fm;
   WindowManager m_window;
+  LevelData m_levelData;
 };

@@ -14,6 +14,7 @@
 
 int main()
 {
+  std::srand(std::time(nullptr));
   //WindowManager window;
   //Resources::instance().loadResources();
   //SoundManager::instance();

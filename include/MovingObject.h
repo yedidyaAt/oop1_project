@@ -16,6 +16,8 @@ public:
   virtual void handleCollision(Ground& obj) override  = 0;
   virtual void handleCollision(Ladder& obj) override  = 0;
   virtual void handleCollision(Rope& obj) override  = 0;
+
+  //delete no needs
   Layer getLayer()override;
   sf::Vector2f getVelocity(const sf::Vector2f&, float speed, float deltaTime)const;
 
