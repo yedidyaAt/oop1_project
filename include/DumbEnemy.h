@@ -1,6 +1,7 @@
 #pragma once
 #include "Enemy.h"
 
+
 class DumbEnemy: public Enemy
 {
 public:
@@ -19,5 +20,10 @@ public:
 
   sf::Vector2f getDirection()override ;
 
+private:
+  void updateDirTime(float deltaTime);
+
+  float m_changeDirTimer;
+  sf::Vector2f m_currentDir;
 };
 

@@ -77,8 +77,11 @@ void Player::handleCollision(Ground& obj)
 
 void Player::handleCollision(Ladder& obj)
 {
-  setOnLadder(true);
-  handleLadderLogic(obj);
+  if (isOnObject(obj))
+  {
+    setOnLadder(true);
+    handleLadderLogic(obj);
+  }
 }
 
 void Player::handleCollision(Rope& obj)
@@ -95,6 +98,11 @@ void Player::lifeLost()
 {
   m_package.m_life--;
   std::cout << m_package.m_life << std::endl;
+}
+
+const PlayerPackage& Player::getPackage() const
+{
+  return m_package;
 }
 
 void Player::takeCoin(int value)

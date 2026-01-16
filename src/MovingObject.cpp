@@ -129,6 +129,18 @@ void MovingObject::setLastDir(const sf::Vector2f& dir)
   m_lastDir = dir;
 }
 
+bool MovingObject::isOnObject(const Object& obj)
+{
+  const auto& overlap = getBoundRec().findIntersection(obj.getBoundRec());
+  
+  float isOverlapMount = UiConfig::TILE_SIZE * 0.4f;
+
+  if (overlap->size.x >= isOverlapMount)
+    return true;
+
+  return false;
+}
+
 bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryCondition)
 {
   // 1. שליפת גבולות

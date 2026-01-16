@@ -11,12 +11,15 @@
 #include "Wall.h"
 
 
-
 DumbEnemy::DumbEnemy(const sf::Vector2f& position, bool isActive)
-                    :Enemy(position,isActive){}
+                    :Enemy(position,isActive)
+{
+  m_changeDirTimer = 0;
+}
 
 void DumbEnemy::update(float deltaTime)
 {
+  updateDirTime(deltaTime);
   move(deltaTime);
 }
 
@@ -44,8 +47,11 @@ void DumbEnemy::handleCollision(Ground & obj)
 }
 void DumbEnemy::handleCollision(Ladder & obj) 
 {
-  setOnLadder(true);
-  handleLadderLogic(obj);
+  if (isOnObject(obj))
+  {
+    setOnLadder(true);
+    handleLadderLogic(obj);
+  }
 }
 void DumbEnemy::handleCollision(Rope & obj) 
 {
@@ -54,6 +60,18 @@ void DumbEnemy::handleCollision(Rope & obj)
 
 sf::Vector2f DumbEnemy::getDirection()
 {
-    return InputHandler::getRandomInput();
+  if (m_changeDirTimer <= 0)
+  {
+    m_currentDir = InputHandler::getRandomInput();
+    // זמן רנדומלי בין 1 ל-3 שניות
+    m_changeDirTimer = (std::rand() % 200 + 100) / 100.0f;
+  }
+
+  return m_currentDir;
+}
+
+void DumbEnemy::updateDirTime(float deltaTime)
+{
+  m_changeDirTimer -= deltaTime;
 }
 

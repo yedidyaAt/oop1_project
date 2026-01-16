@@ -6,6 +6,7 @@
 #include "GameBar.h"
 #include "WindowManager.h"
 #include "Factory.h"
+#include "SmartEnemy.h"
 
 Level::Level():m_levelData(nullptr)
 {
@@ -45,28 +46,12 @@ void Level::run(WindowManager& window)
   }
 }
 
-void Level::setLevel(std::vector<std::string> board, LevelData& levelData)
+void Level::setLevel(const std::vector<std::string>& board, LevelData& levelData)
 {
   m_levelData = &levelData;
-  // reset 
-  m_movableObj.clear();
-
-  for (int row = 0; row < board.size(); ++row)
-  {
-    for (int col = 0; col < board[row].size(); ++col)
-    {
-      char& tile = board[row][col];
-      sf::Vector2f pos(
-        static_cast<float>(col) * UiConfig::TILE_SIZE,
-        static_cast<float>(row) * UiConfig::TILE_SIZE
-      );
-
-      createEntity(tile, pos);
-    }
-  }
-   
-  m_levelData->m_coinCreated = Factory::instance().getCreatedCnt(ObjectSymbol::COIN);
-  m_player->setCoinCreated(m_levelData->m_coinCreated);
+  
+  setObjects(board);
+  setCoins();
 }
 
 void Level::drawLevel(sf::RenderWindow& window)
@@ -102,6 +87,48 @@ bool Level::createEntity(char tile,const sf::Vector2f& pos)
   }
 
   return false;
+}
+
+void Level::setObjects(const std::vector<std::string>& board)
+{
+  createObjects(board);
+  setSmartEnemyTarget();
+}
+
+void Level::setSmartEnemyTarget()
+{
+  for (auto& obj : m_movableObj)
+  {
+    if (auto smartE = dynamic_cast<SmartEnemy*>(obj.get()))
+    {
+      smartE->setTarget(*m_player.get());
+    }
+  }
+}
+
+void Level::createObjects(const std::vector<std::string>& board)
+{
+  m_movableObj.clear();
+
+  for (int row = 0; row < board.size(); ++row)
+  {
+    for (int col = 0; col < board[row].size(); ++col)
+    {
+      const char& tile = board[row][col];
+      sf::Vector2f pos(
+        static_cast<float>(col) * UiConfig::TILE_SIZE,
+        static_cast<float>(row) * UiConfig::TILE_SIZE
+      );
+
+      createEntity(tile, pos);
+    }
+  }
+}
+
+void Level::setCoins()
+{
+  m_levelData->m_coinCreated = Factory::instance().getCreatedCnt(ObjectSymbol::COIN);
+  m_player->setCoinCreated(m_levelData->m_coinCreated);
 }
 
 void Level::updateObject()

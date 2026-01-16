@@ -31,6 +31,7 @@ public:
   
   void setCoinCreated(int cnt);
   void lifeLost();
+  const PlayerPackage& getPackage()const;
 protected:
   void takeCoin(int value);
 

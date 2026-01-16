@@ -41,7 +41,7 @@ protected:
   virtual sf::Vector2f getDirection() = 0;
   void move(float deltaTime);
   void setLastDir(const sf::Vector2f& dir );
-
+  bool isOnObject(const Object& obj);
 
   // לוגיקה ספציפית (מחליף את snapToX/snapToY)
   void handleLadderLogic(const Object& ladder);

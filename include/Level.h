@@ -16,7 +16,7 @@ public:
 
   void run(WindowManager& window);
 
-  void setLevel(std::vector<std::string> board, LevelData& levelData);
+  void setLevel(const std::vector<std::string>& board, LevelData& levelData);
 
   float getCols()const;
   float getRows()const;
@@ -35,6 +35,10 @@ private:
 
   void resetPositions();
   bool createEntity(char tile, const sf::Vector2f& pos);
+  void createObjects(const std::vector<std::string>& board);
+  void setObjects(const std::vector<std::string>& board);
+  void setSmartEnemyTarget();
+  void setCoins();
 
   std::unique_ptr<Player> m_player;
   std::vector<std::unique_ptr<Object>> m_movableObj;
