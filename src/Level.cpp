@@ -49,19 +49,22 @@ void Level::run(WindowManager& window)
 void Level::setLevel(const std::vector<std::string>& board, LevelData& levelData)
 {
   m_levelData = &levelData;
-  
+
   setObjects(board);
+  setBoardMoveable();
   setCoins();
+
+  m_board.setBoard(&m_staticObj, m_player.get(), m_levelData);
 }
 
 void Level::drawLevel(sf::RenderWindow& window)
 {
-  drawObj(window, getStaticObj());
-  drawObj(window, getMovableObj());
+  drawStaticObj(window);
+  drawMoveableObj(window, getMovableObj());
   m_player->draw(window);
 }
 
-bool Level::createEntity(char tile,const sf::Vector2f& pos)
+bool Level::createEntity(char tile,const sf::Vector2f& pos, const sf::Vector2f& index)
 {
   ObjectSymbol symbol = static_cast<ObjectSymbol>(tile);
 
@@ -82,7 +85,7 @@ bool Level::createEntity(char tile,const sf::Vector2f& pos)
   else if(auto staticObj = dynamic_cast<StaticObject*>(obj.get()))
   {
     obj.release();
-    m_staticObj.push_back(std::unique_ptr<StaticObject>(staticObj));
+    m_staticObj[index.y][index.x] = std::unique_ptr<StaticObject>(staticObj);
     return true;
   }
 
@@ -91,24 +94,10 @@ bool Level::createEntity(char tile,const sf::Vector2f& pos)
 
 void Level::setObjects(const std::vector<std::string>& board)
 {
-  createObjects(board);
-  setSmartEnemyTarget();
-}
-
-void Level::setSmartEnemyTarget()
-{
-  for (auto& obj : m_movableObj)
-  {
-    if (auto smartE = dynamic_cast<SmartEnemy*>(obj.get()))
-    {
-      smartE->setTarget(*m_player.get());
-    }
-  }
-}
-
-void Level::createObjects(const std::vector<std::string>& board)
-{
   m_movableObj.clear();
+  m_staticObj.clear();
+
+  resizeMap();
 
   for (int row = 0; row < board.size(); ++row)
   {
@@ -120,15 +109,32 @@ void Level::createObjects(const std::vector<std::string>& board)
         static_cast<float>(row) * UiConfig::TILE_SIZE
       );
 
-      createEntity(tile, pos);
+      createEntity(tile, pos,sf::Vector2f{(float)col,(float)row});
     }
   }
+}
+
+void Level::setBoardMoveable()
+{
+  m_player->setBoradPtr(m_board);
+
+  for (auto& obj : m_movableObj)
+    obj->setBoradPtr(m_board);
 }
 
 void Level::setCoins()
 {
   m_levelData->m_coinCreated = Factory::instance().getCreatedCnt(ObjectSymbol::COIN);
   m_player->setCoinCreated(m_levelData->m_coinCreated);
+}
+
+void Level::resizeMap()
+{
+  m_staticObj.resize(m_levelData->m_LevelSize.y);
+
+  for (auto& row : m_staticObj) {
+    row.resize(m_levelData->m_LevelSize.x);
+  }
 }
 
 void Level::updateObject()
@@ -161,11 +167,14 @@ void Level::handlColision(Object& curObj)
     }
   }
 
-  for (auto& obj : m_staticObj)
+  for (auto& line : m_staticObj)
   {
-    if (curObj.haveColision(*obj.get()))
+    for (auto& obj : line)
     {
-      curObj.handleCollision(*obj.get());
+      if (obj && curObj.haveColision(*obj.get())) // obj != nullptr
+      {
+        curObj.handleCollision(*obj.get());
+      }
     }
   }
 }
@@ -176,10 +185,19 @@ void Level::updateLevel()
   handlColisions();
 }
 
-void Level::drawObj(sf::RenderWindow& window,const std::vector<std::unique_ptr<Object>>& objects) const
+void Level::drawMoveableObj(sf::RenderWindow& window,const std::vector<std::unique_ptr<MovingObject>>& objects) const
 {
   for (const auto& obj : objects)
-    obj->draw(window);
+    if(obj)
+      obj->draw(window);
+}
+
+void Level::drawStaticObj(sf::RenderWindow& window)
+{
+  for (const auto& line : m_staticObj)
+    for (const auto& obj : line)
+      if (obj)
+        obj->draw(window);
 }
 
 void Level::resetPositions()
@@ -188,21 +206,13 @@ void Level::resetPositions()
     object->resetStartPos();
 }
 
-Player* Level::getPlayer() const
-{
-  for (const auto& obj : m_movableObj)
-    if (obj->getSymbol() == ObjectSymbol::PLAYER)
-      return static_cast<Player*>(obj.get());
 
-  return nullptr;
-}
-
-const std::vector<std::unique_ptr<Object>>& Level::getMovableObj() const
+const std::vector<std::unique_ptr<MovingObject>>& Level::getMovableObj() const
 {
   return m_movableObj;
 }
 
-const std::vector<std::unique_ptr<Object>>& Level::getStaticObj() const
+const  std::vector<std::vector<std::unique_ptr<StaticObject>>>& Level::getStaticObj() const
 {
   return m_staticObj;
 }

@@ -11,6 +11,7 @@
 
 #include "InputHandler.h"
 
+#include <iostream>
 
 SmartEnemy::SmartEnemy(const sf::Vector2f& position,bool isActive)
                       :Enemy(position, isActive){}
@@ -19,6 +20,7 @@ SmartEnemy::SmartEnemy(const sf::Vector2f& position,bool isActive)
 void SmartEnemy::update(float deltaTime)
 {
   move(deltaTime);
+  keepObjInsideMap();
 }
 
 void SmartEnemy::handleCollision(Object& obj)
@@ -58,10 +60,12 @@ void SmartEnemy::handleCollision(Rope& obj)
 
 sf::Vector2f SmartEnemy::getDirection()
 {
-  if (!m_playerTarget) return { 0, 0 };
+  if (!m_borad)
+    return { 0, 0 };
+
 
   sf::Vector2f myPos = getPos();
-  sf::Vector2f playerPos = m_playerTarget->getPos();
+  sf::Vector2f playerPos = m_borad->getPlayerPosition();
 
   sf::Vector2f dir = { 0, 0 };
 
@@ -90,11 +94,6 @@ sf::Vector2f SmartEnemy::getDirection()
   // לבינתיים - זה יגרום לו לרדוף באגרסיביות.
 
   return dir;
-}
-
-void SmartEnemy::setTarget(const Object& obj)
-{
-  m_playerTarget = &obj;
 }
 
 

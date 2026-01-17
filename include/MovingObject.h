@@ -1,6 +1,8 @@
 #pragma once
 #include "Object.h"
 #include "SoundManager.h"
+#include "Board.h"
+
 
 class MovingObject : public Object {
 public:
@@ -9,13 +11,17 @@ public:
   virtual void update(float deltaTime) override = 0;
 
   virtual void handleCollision(Object& obj) override  = 0;
-  virtual void handleCollision(Player& obj) override  = 0;
-  virtual void handleCollision(Enemy& obj) override  = 0;
-  virtual void handleCollision(Coin& obj) override  = 0;
-  virtual void handleCollision(Wall& obj) override  = 0;
-  virtual void handleCollision(Ground& obj) override  = 0;
-  virtual void handleCollision(Ladder& obj) override  = 0;
-  virtual void handleCollision(Rope& obj) override  = 0;
+  void setBoradPtr(Board& board);
+
+
+protected:
+  virtual void handleCollision(Player& obj) override = 0;
+  virtual void handleCollision(Enemy& obj) override = 0;
+  virtual void handleCollision(Coin& obj) override = 0;
+  virtual void handleCollision(Wall& obj) override = 0;
+  virtual void handleCollision(Ground& obj) override = 0;
+  virtual void handleCollision(Ladder& obj) override = 0;
+  virtual void handleCollision(Rope& obj) override = 0;
 
   //delete no needs
   Layer getLayer()override;
@@ -27,8 +33,8 @@ public:
   sf::Vector2f getVelocity() const;
 
   void onGround(); //reset velocity and ground
-  void offGround(); 
-  bool isOnGround() const; 
+  void offGround();
+  bool isOnGround() const;
 
   bool isOnLadder() const;
   void setOnLadder(bool flag);
@@ -37,13 +43,11 @@ public:
   void OnRope();
   void offRope();
 
-protected:
   virtual sf::Vector2f getDirection() = 0;
   void move(float deltaTime);
   void setLastDir(const sf::Vector2f& dir );
   bool isOnObject(const Object& obj);
 
-  // לוגיקה ספציפית (מחליף את snapToX/snapToY)
   void handleLadderLogic(const Object& ladder);
   void handleRopeLogic(const Object& rope);
 
@@ -51,6 +55,11 @@ protected:
   void resolveOverlap(Object& obj);
 
   bool alignToCenter(const Object& target, bool isXAxis, bool entryCondition);
+
+  void keepObjInsideMap();
+
+
+  Board* m_borad = nullptr;
 private:
   sf::Vector2f m_lastDir;
   sf::Vector2f m_velocity = { 0,0 };

@@ -194,6 +194,40 @@ bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryC
   return false; // לא בוצע שינוי
 }
 
+void MovingObject::keepObjInsideMap()
+{
+  if (!m_borad) return;
+
+  sf::Vector2u gridDimensions = m_borad->getSizeBoard();
+
+  float mapWidth = gridDimensions.x * UiConfig::TILE_SIZE;
+ 
+
+  sf::Vector2f currentPos = getPos();
+  float tileSize = UiConfig::TILE_SIZE; 
+
+  if (currentPos.x < 0)
+  {
+    currentPos.x = 0;
+  }
+  else if (currentPos.x + tileSize > mapWidth)
+  {
+    currentPos.x = mapWidth - tileSize;
+  }
+
+  if (currentPos.y < 0)
+  {
+    currentPos.y = 0;
+  }
+
+  setPos(currentPos);
+}
+
+void MovingObject::setBoradPtr(Board& board)
+{
+  m_borad = &board;
+}
+
 void MovingObject::handleLadderLogic(const Object& ladder)
 {
   if (getLastDir().x != 0)

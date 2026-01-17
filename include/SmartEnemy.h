@@ -19,8 +19,6 @@ public:
   void handleCollision(Rope& obj)    override;
 
   sf::Vector2f getDirection()override ;
-  void setTarget(const Object& obj);
 private:
-  const Object* m_playerTarget = nullptr;
 };
 

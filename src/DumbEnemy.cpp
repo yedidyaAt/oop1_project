@@ -21,6 +21,7 @@ void DumbEnemy::update(float deltaTime)
 {
   updateDirTime(deltaTime);
   move(deltaTime);
+  keepObjInsideMap();
 }
 
 void DumbEnemy::handleCollision(Object& obj) 

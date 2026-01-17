@@ -36,6 +36,7 @@ Player::Player(const sf::Vector2f& position, const PlayerPackage& package, bool 
 void Player::update(float deltaTime)
 {
   move(deltaTime);
+  keepObjInsideMap();
 }
 
 
