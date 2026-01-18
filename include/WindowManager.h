@@ -16,6 +16,7 @@ public:
   void activateGameView();
   void activateBarView();
 
+  sf::Vector2f getSizeBar()const;
 private:
   void setViewFromSize(const sf::Event::Resized* resized);
 

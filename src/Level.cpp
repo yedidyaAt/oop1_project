@@ -15,15 +15,25 @@ Level::Level():m_levelData(nullptr)
 GamePlayStat Level::run(WindowManager& window)
 {
   window.updateGameView(*this);
+  m_bar.setLevelData(*m_levelData);
 
   while (window.isOpen() && m_gameRun)
   {
 
     // update
     updateLevel();
+    m_bar.update();
+    m_bar.updateLayout(window.getSizeBar());
 
     //draw
+    window.clear();
+
     drawLevel(window);
+    window.activateBarView();
+    m_bar.drawText(window);
+
+    window.display();
+
 
     while (const auto& event = window.pollEvent())
     {
@@ -111,7 +121,6 @@ void Level::setObjects(const std::vector<std::string>& board)
 void Level::setBoardMoveable()
 {
   m_player->setBoradPtr(m_board);
-
   for (auto& obj : m_movableObj)
     obj->setBoradPtr(m_board);
 }
@@ -174,16 +183,16 @@ void Level::handlColision(Object& curObj)
 
 void Level::drawLevel(WindowManager& window)
 {
-  window.clear();
+  //window.clear();
   drawBoard(window);
-  window.display();
+  //window.display();
 }
 
 void Level::updateLevel()
 {
   const float deltaTime = m_clock.restart().asSeconds();
 
-  checkGameStatus();
+  handlGameStatus();
   updateObject(deltaTime);
   handlColisions();
   updateLevelData(deltaTime);
@@ -212,7 +221,7 @@ void Level::updateLevelData(float dt)
   m_levelData->m_timer -= dt;
 }
 
-void Level::checkGameStatus()
+void Level::handlGameStatus()
 {
   if (!m_player->isActive()) // if player dead
   {

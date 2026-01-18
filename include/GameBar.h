@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Const.h"
+#include "WindowManager.h"
 
 class Object;
 
@@ -9,23 +10,18 @@ class GameBar
 public:
   GameBar();
 
-  int getLife()const;
-  int getLCurLevel()const;
-  int getScore()const;
-  float getTimerTime()const;
+  void drawText(WindowManager& window);
+  void update();
+  void updateLayout(const sf::Vector2f& size);
 
-  void playerDied();
-  void CoinCollected();
-  void levelComplete();
-  void updateTimer(float dt);
+  void setLevelData(const LevelData& levelData);
 private:
-  void increaseLevel();
-  void addScore(int score);
-  int takeCoinScore();
-  int levelCompleteScore();
-
-  int m_life = GameConfig::Bar::LIFE;
-  int m_curLevel = GameConfig::Bar::START_LEVEL;
-  int m_score = GameConfig::Bar::SCORE;
-  float m_timerTime = GameConfig::Bar::TIMER_TIME;
+  void initTexts();
+  void alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, const sf::Vector2f& barSize);
+  
+  sf::Text m_scoreText;
+  sf::Text m_livesText;
+  sf::Text m_timeText;
+  sf::Text m_levelText;
+  const LevelData* m_levelData = nullptr;
 };

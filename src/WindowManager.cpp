@@ -107,3 +107,8 @@ void WindowManager::activateBarView()
 {
   setView(m_barView);
 }
+
+sf::Vector2f WindowManager::getSizeBar() const
+{
+  return m_barView.getSize();
+}

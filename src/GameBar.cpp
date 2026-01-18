@@ -1,71 +1,76 @@
 #include "GameBar.h"
-#include "StaticObject.h"
-#include <SFML/System/Vector2.hpp>
+#include "Resources.h"
+#include "string"
 
 
 GameBar::GameBar()
+  :m_scoreText(Resources::instance().getFont(FontType::Damned)),
+   m_livesText(Resources::instance().getFont(FontType::Damned)),
+   m_timeText(Resources::instance().getFont(FontType::Damned)),
+   m_levelText(Resources::instance().getFont(FontType::Damned))
 {
-
+  initTexts();
 }
 
-int GameBar::getLife() const
+void GameBar::drawText(WindowManager& window)
 {
-  return m_life;
+  window.draw(m_levelText);
+  window.draw(m_livesText);
+  window.draw(m_scoreText);
+  window.draw(m_timeText);
 }
 
-int GameBar::getLCurLevel() const
+void GameBar::update()
 {
-  return m_curLevel;
+  if (!m_levelData)
+    return;
+
+  m_levelText.setString("LEVEL: " + std::to_string(m_levelData->m_curLevel));
+  m_livesText.setString("LIVE: "  + std::to_string(m_levelData->m_life));
+  m_scoreText.setString("SCORE: " + std::to_string(m_levelData->m_score));
+  m_timeText.setString("TIMER: "  + std::to_string(static_cast<int>(m_levelData->m_timer)));
 }
 
-int GameBar::getScore() const
+void GameBar::updateLayout(const sf::Vector2f& size)
 {
-  return m_score;
+  alignTextToSlot(m_levelText, 0, 4, size);
+  alignTextToSlot(m_livesText, 1, 4, size);
+  alignTextToSlot(m_scoreText, 2, 4, size);
+  alignTextToSlot(m_timeText , 3, 4, size);
 }
 
-float GameBar::getTimerTime() const
+void GameBar::setLevelData(const LevelData& levelData)
 {
-  return m_timerTime;
+  m_levelData = &levelData;
 }
 
-void GameBar::playerDied()
+void GameBar::initTexts()
 {
-  m_life--;
+  
+  m_levelText.setString("LEVEL");
+  m_livesText.setString("LIVE");
+  m_scoreText.setString("SCORE");
+  m_timeText.setString("TIMER");
 }
 
-void GameBar::increaseLevel()
+void GameBar::alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, const sf::Vector2f& barSize)
 {
-  m_curLevel++;
-}
+  const float slotWidth = barSize.x / totalSlots;
 
-void GameBar::CoinCollected()
-{
-  addScore(takeCoinScore());
-}
+  //setSize char
+  const  unsigned int charSize = barSize.y * 0.5f; // 50% from the high
+  text.setCharacterSize(charSize);
 
-void GameBar::levelComplete()
-{
-  addScore(levelCompleteScore());
-  increaseLevel();
-}
+  //center of text
+  sf::FloatRect bound = text.getLocalBounds();
+  const float centerX = bound.position.x + bound.size.x / 2;
+  const float centerY = bound.position.y + bound.size.y / 2;
 
-void GameBar::addScore(int score)
-{
-  m_score += score;
-}
+  text.setOrigin({ centerX,centerY});
 
-void GameBar::updateTimer(float dt)
-{
-  m_timerTime -= dt;
-}
+  // cneter of slot
+ const float posX = slotIndex * slotWidth + slotWidth / 2;
+ const float posY = barSize.y / 2;
 
-int GameBar::takeCoinScore()
-{
-  return GameConfig::Bar::COIN_SCORE*getLCurLevel();
+  text.setPosition({ posX,posY});
 }
-
-int GameBar::levelCompleteScore()
-{
-  return GameConfig::Bar::COMPLETE_LEVEL_SCORE*getLCurLevel();
-}
-

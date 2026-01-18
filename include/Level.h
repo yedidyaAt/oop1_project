@@ -7,6 +7,7 @@
 #include "Const.h"
 #include "StaticObject.h"
 #include "Board.h"
+#include "GameBar.h"
 
 class WindowManager;
 
@@ -34,7 +35,7 @@ private:
   void drawStaticObj(sf::RenderWindow& window);
 
   void updateLevelData(float dt);
-  void checkGameStatus();
+  void handlGameStatus();
   void resetLevel();
   void hardResetLevel();
   void resetPosMoveablObj();
@@ -56,8 +57,10 @@ private:
   std::vector<std::unique_ptr<MovingObject>> m_movableObj;
   std::vector<std::vector<std::unique_ptr<StaticObject>>> m_staticObj;
   Board m_board;
+
   sf::Clock m_clock;
   GamePlayStat m_gameStatus;
   bool m_gameRun = true;
   bool m_isTimerUp = false;
+  GameBar m_bar;
 };

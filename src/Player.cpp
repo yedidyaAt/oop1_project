@@ -104,7 +104,6 @@ void Player::lifeLost()
   sf::sleep(sf::seconds(2));
   destroy();
   m_package.m_life--;
-  std::cout << m_package.m_life << std::endl;
 }
 
 const PlayerPackage& Player::getPackage() const
