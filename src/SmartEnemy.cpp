@@ -19,8 +19,12 @@ SmartEnemy::SmartEnemy(const sf::Vector2f& position,bool isActive)
 
 void SmartEnemy::update(float deltaTime)
 {
+  if (!isActive())
+    return;
+
   move(deltaTime);
   keepObjInsideMap();
+  checkFallingOutsideMap();
 }
 
 void SmartEnemy::handleCollision(Object& obj)

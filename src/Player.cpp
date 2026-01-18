@@ -18,7 +18,7 @@ static bool registered = Factory::instance().registerType(ObjectSymbol::PLAYER,
   [](const sf::Vector2f& pos, const LevelData& data) 
   {
     PlayerPackage package;
-    package.m_coinLeft = data.m_coinCreated; // <- 0 //for initialstion
+    package.m_coinLeft = data.m_coinLeft; // <- 0 //for initialstion
     package.m_life = data.m_life;
     package.m_score = data.m_score;
     package.m_curLevel = data.m_curLevel;
@@ -35,8 +35,12 @@ Player::Player(const sf::Vector2f& position, const PlayerPackage& package, bool 
 
 void Player::update(float deltaTime)
 {
+  if (!isActive())
+    return;
   move(deltaTime);
+  digGround();
   keepObjInsideMap();
+  handlFallingOutside();
 }
 
 
@@ -57,7 +61,6 @@ void Player::handleCollision(Player& obj)
 
 void Player::handleCollision(Enemy& obj)
 {
-  SoundManager::instance().playSound(SoundType::LIFE_LOST);
   lifeLost();
 }
 
@@ -96,7 +99,10 @@ void Player::setCoinCreated(int cnt)
 }
 
 void Player::lifeLost()
-{
+{ 
+  SoundManager::instance().playSound(SoundType::LIFE_LOST);
+  sf::sleep(sf::seconds(2));
+  destroy();
   m_package.m_life--;
   std::cout << m_package.m_life << std::endl;
 }
@@ -111,6 +117,47 @@ void Player::takeCoin(int value)
   m_package.m_coinLeft--;
   addScore(value);
   addScroeCommplete();
+}
+
+void Player::digGround()
+{
+  const sf::Vector2f digPos = getDigPos();
+
+  if (m_borad)
+    m_borad->tryToDig(digPos);
+}
+
+void Player::handlFallingOutside()
+{
+  if (checkFallingOutsideMap())
+    lifeLost();
+}
+
+sf::Vector2f Player::ActionToPos(Action action) const
+{
+  if (action == Action::NONE)
+    return { -1.f,-1.f };
+  
+  const sf::Vector2f curCenterPos = getBoundRec().getCenter();
+  const float tileSize = UiConfig::TILE_SIZE;
+  sf::Vector2f digPos = { 0, curCenterPos.y + tileSize };
+
+  if (action == Action::DIG_LEFT)
+  {
+    digPos.x = curCenterPos.x - tileSize;
+  }
+  else if (action == Action::DIG_RIGHT)
+  {
+    digPos.x = curCenterPos.x + tileSize;
+  }
+
+  return digPos;
+}
+
+sf::Vector2f Player::getDigPos() const
+{
+  Action action = InputHandler::getActionInput();
+  return ActionToPos(action);
 }
 
 void Player::addScore(int value)

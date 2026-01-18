@@ -3,6 +3,11 @@
 #include <vector>
 #include <string_view>
 
+enum class GamePlayStat
+{
+   GAME_OVER,
+   FINISH_LEVEL
+};
 
 enum class FontType
 {
@@ -27,9 +32,9 @@ enum class SoundType {
   COLLECT_COIN,       // gotCoin.mp3
   LIFE_LOST,          // lifeLost.mp3
   FALL,               // playerFalling.mp3
+  SMASHED,            // playerSmashed.mp3
   COUNTDOWN,          // gameCountdown.mp3
   LEVEL_COMPLETE,     // finishLevel.mp3
-  GAME_OVER_JINGLE,   // gameOver.mp3 (המוזיקה)
   GAME_OVER_VOICE     // gameOverVoice.mp3 (הדיבור)
 };
 
@@ -65,6 +70,7 @@ enum class SoundType {
       inline constexpr float SPEED = 200.f;
       inline constexpr float GRAVITY = 500.f;
       inline constexpr float LADDER_SNAP_THRESHOLD = 0.2f;
+      inline constexpr float FALL_THRESHOLD = 200.f;
     }
     namespace Bar
     {
@@ -122,6 +128,6 @@ enum class SoundType {
     int m_score = GameConfig::Bar::SCORE;
     float m_timer = GameConfig::Bar::TIMER_TIME;
 
-    int m_coinCreated = 0;
+    int m_coinLeft = 0;
     sf::Vector2u m_LevelSize;
   };

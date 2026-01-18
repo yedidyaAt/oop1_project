@@ -13,7 +13,7 @@ public:
   virtual void handleCollision(Object& obj) override  = 0;
   void setBoradPtr(Board& board);
 
-
+  void reset() override;
 protected:
   virtual void handleCollision(Player& obj) override = 0;
   virtual void handleCollision(Enemy& obj) override = 0;
@@ -57,7 +57,9 @@ protected:
   bool alignToCenter(const Object& target, bool isXAxis, bool entryCondition);
 
   void keepObjInsideMap();
-
+  bool checkFallingOutsideMap();
+  void checkFalling(float fallSpeed);
+  void checkSmashed();
 
   Board* m_borad = nullptr;
 private:
@@ -66,4 +68,6 @@ private:
   bool m_onLadder = false;
   bool m_onRope = false;
   bool m_onGround = false;
+  bool m_faling = false;
+  bool m_smashed = false;
 };

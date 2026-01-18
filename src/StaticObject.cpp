@@ -8,3 +8,8 @@ void StaticObject::update(float deltaTime)
 {
 }
 
+void StaticObject::reset()
+{
+  livenUp();
+}
+

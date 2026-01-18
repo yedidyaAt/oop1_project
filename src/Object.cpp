@@ -67,7 +67,7 @@ bool Object::haveColision(const Object& other) const
   if (this == &other)
     return false;
 
-  if (other.isActive())
+  if (this->isActive() && other.isActive())
     return getBoundRec().findIntersection(other.getBoundRec()).has_value();
   else
     return false;
@@ -76,6 +76,11 @@ bool Object::haveColision(const Object& other) const
 void Object::destroy()
 {
   m_isActive = false;
+}
+
+void Object::livenUp()
+{
+  m_isActive = true;
 }
 
 void Object::resetStartPos()

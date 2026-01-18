@@ -10,6 +10,7 @@
 #include "Coin.h"
 #include "Wall.h"
 
+#include <iostream>
 
 DumbEnemy::DumbEnemy(const sf::Vector2f& position, bool isActive)
                     :Enemy(position,isActive)
@@ -19,9 +20,13 @@ DumbEnemy::DumbEnemy(const sf::Vector2f& position, bool isActive)
 
 void DumbEnemy::update(float deltaTime)
 {
+  if (!isActive())
+    return;
+
   updateDirTime(deltaTime);
   move(deltaTime);
   keepObjInsideMap();
+  checkFallingOutsideMap();
 }
 
 void DumbEnemy::handleCollision(Object& obj) 

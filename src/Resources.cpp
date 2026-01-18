@@ -27,10 +27,10 @@ void Resources::loadResources()
   bool soundsLoaded =
     m_coinBuffer.loadFromFile("gotCoin.mp3") &&
     m_lifeLostBuffer.loadFromFile("lifeLost.mp3") &&
-    m_fallBuffer.loadFromFile("playerFalling.mp3") &&
+    m_fallBuffer.loadFromFile("playerfalling.mp3") &&
+    m_smashedBuffer.loadFromFile("playerSmashed.mp3") &&
     m_countdownBuffer.loadFromFile("gameCountdown.mp3") &&
     m_levelCompleteBuffer.loadFromFile("finishLevel.mp3")&&
-    //m_gameOverJingleBuffer.loadFromFile("gameOver.mp3") &&
     m_gameOverVoiceBuffer.loadFromFile("gameOverVoice.mp3");
 
   bool fontsLoaded = m_damned.openFromFile("Damned.ttf");
@@ -76,9 +76,9 @@ const sf::SoundBuffer& Resources::getSoundBuffer(SoundType type) const
   case SoundType::COLLECT_COIN:     return m_coinBuffer;
   case SoundType::LIFE_LOST:        return m_lifeLostBuffer;
   case SoundType::FALL:             return m_fallBuffer;
+  case SoundType::SMASHED:          return m_smashedBuffer;
   case SoundType::COUNTDOWN:        return m_countdownBuffer;
   case SoundType::LEVEL_COMPLETE:   return m_levelCompleteBuffer;
-  case SoundType::GAME_OVER_JINGLE: return m_gameOverJingleBuffer;
   case SoundType::GAME_OVER_VOICE:  return m_gameOverVoiceBuffer;
   default:                          return m_coinBuffer; // сън Safe Fallback
   }

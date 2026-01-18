@@ -37,21 +37,20 @@ void MovingObject::move(float deltaTime)
   }
   else if (isOnRope())
   {
+    m_faling = false;
     currentVel.y = 0;
   }
   else
   {
     // כבידה
-    if (!isOnGround()) {
-      currentVel.y += GameConfig::Physics::GRAVITY * deltaTime;
-      
- /*     std::cout << getVelocity().x << std::endl;
-      if (getVelocity().y > UiConfig::TILE_SIZE)
-        SoundManager::instance().playSound(SoundType::FALL);*/
-
-    }
+    if (!isOnGround()) 
+      {
+        currentVel.y += GameConfig::Physics::GRAVITY * deltaTime;
+        checkFalling(currentVel.y);
+      }
     else {
       currentVel.y = 0;
+      checkSmashed();
     }
   }
 
@@ -223,9 +222,56 @@ void MovingObject::keepObjInsideMap()
   setPos(currentPos);
 }
 
+bool MovingObject::checkFallingOutsideMap()
+{
+  if (!m_borad)
+    return false;
+
+  sf::Vector2u boardSize = m_borad->getSizeBoard();
+  float tileSize = UiConfig::TILE_SIZE;
+  float mapHight = boardSize.y * tileSize;
+  sf::Vector2f curPos = getPos();
+  
+  if (curPos.y > mapHight)
+  {
+    destroy();
+    return true;
+  }
+
+  return false;
+ }
+
+void MovingObject::checkFalling(float fallSpeed)
+{
+  float fallThreshold = GameConfig::Physics::FALL_THRESHOLD;
+
+  if (!m_faling && fallSpeed > fallThreshold)
+  {
+    m_faling = true;
+    m_smashed = false;
+    SoundManager::instance().playSound(SoundType::FALL);
+  }
+}
+
+void MovingObject::checkSmashed()
+{
+  if (!m_smashed && m_faling)
+  {
+    m_faling = false;
+    m_smashed = true;
+    SoundManager::instance().playSound(SoundType::SMASHED);
+  }
+}
+
 void MovingObject::setBoradPtr(Board& board)
 {
   m_borad = &board;
+}
+
+void MovingObject::reset()
+{
+  resetStartPos();
+  livenUp();
 }
 
 void MovingObject::handleLadderLogic(const Object& ladder)

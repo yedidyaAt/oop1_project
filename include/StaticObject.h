@@ -10,6 +10,9 @@ public:
   void update(float deltaTime)override;
 
   virtual void handleCollision(Object& obj) override = 0;
+
+  void reset()override;
+ protected:
   virtual void handleCollision(Player& obj) override = 0;
   virtual void handleCollision(Enemy& obj) override = 0;
   virtual void handleCollision(Coin& obj) override = 0;
@@ -17,6 +20,7 @@ public:
   virtual void handleCollision(Ground& obj) override = 0;
   virtual void handleCollision(Ladder& obj) override = 0;
   virtual void handleCollision(Rope& obj) override = 0;
+
 private:
 
 };

@@ -41,9 +41,9 @@ private:
   sf::SoundBuffer m_coinBuffer;
   sf::SoundBuffer m_lifeLostBuffer;
   sf::SoundBuffer m_fallBuffer;
+  sf::SoundBuffer m_smashedBuffer;
   sf::SoundBuffer m_countdownBuffer;
   sf::SoundBuffer m_levelCompleteBuffer;
-  sf::SoundBuffer m_gameOverJingleBuffer; // המוזיקה
   sf::SoundBuffer m_gameOverVoiceBuffer;  // הקול
 
   // --- Fonts ---

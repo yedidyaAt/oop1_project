@@ -28,6 +28,7 @@ public:
   virtual void handleCollision(Ladder& obj) =0;
   virtual void handleCollision(Rope& obj) =0;
 
+  virtual void reset() = 0;
 
   virtual Layer getLayer();
 
@@ -39,11 +40,14 @@ public:
   bool haveColision(const Object& other) const;
   
   void destroy();
-  void resetStartPos();
+  void livenUp();
 
   void draw(sf::RenderWindow& window)const;
   void setPos(const sf::Vector2f& newPos);
 
+protected: 
+
+  void resetStartPos();
 private:
   void setSprite(const sf::Vector2f& pos);
   void setScaleSprite();

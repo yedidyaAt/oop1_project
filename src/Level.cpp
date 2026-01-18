@@ -12,12 +12,19 @@ Level::Level():m_levelData(nullptr)
 {
 }
 
-void Level::run(WindowManager& window)
+GamePlayStat Level::run(WindowManager& window)
 {
   window.updateGameView(*this);
 
-  while (window.isOpen())
+  while (window.isOpen() && m_gameRun)
   {
+
+    // update
+    updateLevel();
+
+    //draw
+    drawLevel(window);
+
     while (const auto& event = window.pollEvent())
     {
       // Event
@@ -26,24 +33,10 @@ void Level::run(WindowManager& window)
 
       else if (const auto& resized = event->getIf<sf::Event::Resized>())
         window.updateGameView(*this, resized);
-
-      else if (const auto& exitG = event->getIf<sf::Event::KeyPressed>())
-      {
-        if (exitG->code == sf::Keyboard::Key::Escape)
-          return;
-      }
     }
-
-    // update
-    updateLevel();
-
-    //draw
-    window.clear();
-    window.activateGameView();
-    drawLevel(window);
-
-    window.display();
   }
+
+  return m_gameStatus;
 }
 
 void Level::setLevel(const std::vector<std::string>& board, LevelData& levelData)
@@ -52,13 +45,14 @@ void Level::setLevel(const std::vector<std::string>& board, LevelData& levelData
 
   setObjects(board);
   setBoardMoveable();
-  setCoins();
+  setCoinsLeft();
 
   m_board.setBoard(&m_staticObj, m_player.get(), m_levelData);
 }
 
-void Level::drawLevel(sf::RenderWindow& window)
+void Level::drawBoard(WindowManager& window)
 {
+  window.activateGameView();
   drawStaticObj(window);
   drawMoveableObj(window, getMovableObj());
   m_player->draw(window);
@@ -122,10 +116,10 @@ void Level::setBoardMoveable()
     obj->setBoradPtr(m_board);
 }
 
-void Level::setCoins()
+void Level::setCoinsLeft()
 {
-  m_levelData->m_coinCreated = Factory::instance().getCreatedCnt(ObjectSymbol::COIN);
-  m_player->setCoinCreated(m_levelData->m_coinCreated);
+  m_levelData->m_coinLeft = Factory::instance().getCreatedCnt(ObjectSymbol::COIN);
+  m_player->setCoinCreated(m_levelData->m_coinLeft);
 }
 
 void Level::resizeMap()
@@ -137,9 +131,8 @@ void Level::resizeMap()
   }
 }
 
-void Level::updateObject()
+void Level::updateObject(const float deltaTime)
 {
-  const float deltaTime = m_clock.restart().asSeconds();
 
   m_player->update(deltaTime);
 
@@ -179,10 +172,21 @@ void Level::handlColision(Object& curObj)
   }
 }
 
+void Level::drawLevel(WindowManager& window)
+{
+  window.clear();
+  drawBoard(window);
+  window.display();
+}
+
 void Level::updateLevel()
 {
-  updateObject();
+  const float deltaTime = m_clock.restart().asSeconds();
+
+  checkGameStatus();
+  updateObject(deltaTime);
   handlColisions();
+  updateLevelData(deltaTime);
 }
 
 void Level::drawMoveableObj(sf::RenderWindow& window,const std::vector<std::unique_ptr<MovingObject>>& objects) const
@@ -200,16 +204,97 @@ void Level::drawStaticObj(sf::RenderWindow& window)
         obj->draw(window);
 }
 
-void Level::resetPositions()
+void Level::updateLevelData(float dt)
 {
-  for (auto& object : m_movableObj)
-    object->resetStartPos();
+  m_levelData->m_coinLeft = m_player->getPackage().m_coinLeft;
+  m_levelData->m_life = m_player->getPackage().m_life;
+  m_levelData->m_score = m_player->getPackage().m_score;
+  m_levelData->m_timer -= dt;
 }
 
+void Level::checkGameStatus()
+{
+  if (!m_player->isActive()) // if player dead
+  {
+    if (m_levelData->m_life) // if is have more atlist one life
+    {
+      resetLevel();
+    }
+    else // dead caput
+    {
+      SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
+      sf::sleep(sf::seconds(3));
+      m_gameStatus = GamePlayStat::GAME_OVER;
+      m_gameRun = false;
+    }
+  }
+  else if (!m_isTimerUp && m_levelData->m_timer <= 3)
+    {
+      m_isTimerUp = true;
+      SoundManager::instance().playSound(SoundType::COUNTDOWN);
+    }
+    else if (m_levelData->m_timer <= 0) // time out
+  {
+    m_player->lifeLost();
+
+    if (m_levelData->m_life) // if is have more atlist one life
+    {
+      resetTimer();
+      setCoinsLeft();
+      hardResetLevel();
+    }
+    else // dead caput
+    {
+      SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
+      m_gameStatus = GamePlayStat::GAME_OVER;
+      m_gameRun = false;
+    }
+  }
+  else if (!m_levelData->m_coinLeft)
+  {
+    m_gameRun = false;
+    SoundManager::instance().playSound(SoundType::LEVEL_COMPLETE);
+    sf::sleep(sf::seconds(3));
+    m_gameStatus = GamePlayStat::FINISH_LEVEL;
+  }
+}
+
+void Level::resetLevel()
+{
+   resetPosMoveablObj();
+}
+
+void Level::hardResetLevel()
+{
+  resetPosMoveablObj();
+  resetStaticObj();
+}
 
 const std::vector<std::unique_ptr<MovingObject>>& Level::getMovableObj() const
 {
   return m_movableObj;
+}
+
+
+void Level::resetPosMoveablObj()
+{
+  m_player->reset();
+
+  for (auto& object : m_movableObj)
+    object->reset();
+}
+
+void Level::resetStaticObj()
+{
+  for (auto& line : m_staticObj)
+    for (auto& obj : line)
+      if(obj)
+        obj->reset();
+}
+
+void Level::resetTimer()
+{
+  m_levelData->m_timer = GameConfig::Bar::TIMER_TIME;
 }
 
 const  std::vector<std::vector<std::unique_ptr<StaticObject>>>& Level::getStaticObj() const

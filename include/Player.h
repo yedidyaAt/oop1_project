@@ -34,8 +34,11 @@ public:
   const PlayerPackage& getPackage()const;
 protected:
   void takeCoin(int value);
-
+  void digGround();
 private:
+  void handlFallingOutside();
+  sf::Vector2f ActionToPos(Action action)const;
+  sf::Vector2f getDigPos()const;
   void addScore(int value);
   void addScroeCommplete();
   PlayerPackage m_package;

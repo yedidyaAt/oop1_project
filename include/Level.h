@@ -16,7 +16,7 @@ public:
   Level();
 
 
-  void run(WindowManager& window);
+  GamePlayStat run(WindowManager& window);
 
   void setLevel(const std::vector<std::string>& board, LevelData& levelData);
 
@@ -25,21 +25,29 @@ public:
   sf::Vector2u getSizeLevel()const;
 private:
   void updateLevel();
-  void updateObject();
+  void updateObject(const float deltaTime);
   void handlColisions();
   void handlColision(Object& curObj);
-  void drawLevel(sf::RenderWindow& window);
+  void drawLevel(WindowManager& window);
+  void drawBoard(WindowManager& window);
   void drawMoveableObj(sf::RenderWindow& window, const std::vector<std::unique_ptr<MovingObject>>& objects)const;
   void drawStaticObj(sf::RenderWindow& window);
+
+  void updateLevelData(float dt);
+  void checkGameStatus();
+  void resetLevel();
+  void hardResetLevel();
+  void resetPosMoveablObj();
+  void resetStaticObj();
+  void resetTimer();
 
   const  std::vector<std::vector<std::unique_ptr<StaticObject>>>& getStaticObj()const;
   const std::vector<std::unique_ptr<MovingObject>>& getMovableObj()const;
 
-  void resetPositions();
   bool createEntity(char tile, const sf::Vector2f& pos, const sf::Vector2f& index);
   void setObjects(const std::vector<std::string>& board);
   void setBoardMoveable();
-  void setCoins();
+  void setCoinsLeft();
 
   void resizeMap();
 
@@ -49,4 +57,7 @@ private:
   std::vector<std::vector<std::unique_ptr<StaticObject>>> m_staticObj;
   Board m_board;
   sf::Clock m_clock;
+  GamePlayStat m_gameStatus;
+  bool m_gameRun = true;
+  bool m_isTimerUp = false;
 };
