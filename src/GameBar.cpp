@@ -55,7 +55,9 @@ void GameBar::initTexts()
 
 void GameBar::alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, const sf::Vector2f& barSize)
 {
+  text.setScale({1.f, 1.f});
   const float slotWidth = barSize.x / totalSlots;
+  const float slotHight = barSize.y / totalSlots;
 
   //setSize char
   const  unsigned int charSize = barSize.y * 0.5f; // 50% from the high
@@ -67,6 +69,16 @@ void GameBar::alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, con
   const float centerY = bound.position.y + bound.size.y / 2;
 
   text.setOrigin({ centerX,centerY});
+
+  // scale 
+  if (slotWidth < bound.size.x)
+  {
+    const float scaleX = slotWidth / bound.size.x;
+    const float scaleY = slotHight / bound.size.y;
+
+    const float scale = std::min(scaleX, scaleY);
+    text.setScale({scale, scale});
+  }
 
   // cneter of slot
  const float posX = slotIndex * slotWidth + slotWidth / 2;

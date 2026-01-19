@@ -14,8 +14,8 @@ Level::Level():m_levelData(nullptr)
 
 GamePlayStat Level::run(WindowManager& window)
 {
+  m_gameRun = true;
   window.updateGameView(*this);
-  m_bar.setLevelData(*m_levelData);
 
   while (window.isOpen() && m_gameRun)
   {
@@ -52,6 +52,9 @@ GamePlayStat Level::run(WindowManager& window)
 void Level::setLevel(const std::vector<std::string>& board, LevelData& levelData)
 {
   m_levelData = &levelData;
+  m_bar.setLevelData(*m_levelData);
+  resetTimer();
+  Factory::instance().resetCounts();
 
   setObjects(board);
   setBoardMoveable();
@@ -225,7 +228,7 @@ void Level::handlGameStatus()
 {
   if (!m_player->isActive()) // if player dead
   {
-    if (m_levelData->m_life) // if is have more atlist one life
+    if (m_levelData->m_life > 0) 
     {
       resetLevel();
     }
@@ -246,7 +249,7 @@ void Level::handlGameStatus()
   {
     m_player->lifeLost();
 
-    if (m_levelData->m_life) // if is have more atlist one life
+    if (m_levelData->m_life > 0) // if is have more atlist one life
     {
       resetTimer();
       setCoinsLeft();

@@ -78,7 +78,7 @@ enum class SoundType {
       inline constexpr int LIFE = 3;
       inline constexpr int START_LEVEL = 1;
       inline constexpr int SCORE = 0;
-      inline constexpr float TIMER_TIME = 30;
+      inline constexpr float TIMER_TIME = 60;
       inline constexpr int COIN_SCORE = 2;
       inline constexpr int COMPLETE_LEVEL_SCORE = 50;
     }
