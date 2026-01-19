@@ -11,11 +11,13 @@ public:
   GameBar();
 
   void drawText(WindowManager& window);
-  void update();
-  void updateLayout(const sf::Vector2f& size);
+  void update(const sf::Vector2f& size);
+
 
   void setLevelData(const LevelData& levelData);
 private:
+  void updateBar();
+  void updateLayout(const sf::Vector2f& size);
   void initTexts();
   void alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, const sf::Vector2f& barSize);
   

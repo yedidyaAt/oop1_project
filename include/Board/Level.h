@@ -42,7 +42,7 @@ private:
   void resetStaticObj();
   void resetTimer();
 
-  const  std::vector<std::vector<std::unique_ptr<StaticObject>>>& getStaticObj()const;
+  const std::vector<std::vector<std::unique_ptr<StaticObject>>>& getStaticObj()const;
   const std::vector<std::unique_ptr<MovingObject>>& getMovableObj()const;
 
   bool createEntity(char tile, const sf::Vector2f& pos, const sf::Vector2f& index);

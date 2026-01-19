@@ -2,7 +2,6 @@
 
 #include "InputHandler.h"
 #include <iostream>
-#include "Utilities.h"
 
 #include "Player.h"
 #include "Rope.h"

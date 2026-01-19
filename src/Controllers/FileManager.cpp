@@ -20,7 +20,9 @@ void FileManager::scanFileForLevels() {
   while (true) {
 
     // jump whit spac space/endl
-    file >> std::ws;
+    while (file.peek() != EOF && !isdigit(file.peek())) {
+      file.ignore(1);
+    }
 
     if (file.eof()) break;
 

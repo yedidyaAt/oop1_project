@@ -1,25 +1,11 @@
-﻿#configure_file ("Wall.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("Board.txt" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("player.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("rope.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("ladder.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("ground.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("coin.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("wall.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("enemy.png" ${CMAKE_BINARY_DIR} COPYONLY) 
-configure_file ("empty.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("exit.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("help.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("restart.png" ${CMAKE_BINARY_DIR} COPYONLY)
-configure_file ("start.png" ${CMAKE_BINARY_DIR} COPYONLY)
-# העתקת קבצי הסאונד לתיקיית ההרצה (אחד אחד)
-configure_file("gotCoin.mp3" ${CMAKE_BINARY_DIR}/gotCoin.mp3 COPYONLY)
-configure_file("lifeLost.mp3" ${CMAKE_BINARY_DIR}/lifeLost.mp3 COPYONLY)
-configure_file("playerSmashed.mp3" ${CMAKE_BINARY_DIR}/playerSmashed.mp3 COPYONLY)
-configure_file("playerfalling.mp3" ${CMAKE_BINARY_DIR}/playerfalling.mp3 COPYONLY)
-configure_file("gameCountdown.mp3" ${CMAKE_BINARY_DIR}/gameCountdown.mp3 COPYONLY)
-configure_file("finishLevel.mp3" ${CMAKE_BINARY_DIR}/finishLevel.mp3 COPYONLY)
-configure_file("gameOverVoice.mp3" ${CMAKE_BINARY_DIR}/gameOverVoice.mp3 COPYONLY)
-# fonts
-configure_file("Damned.ttf" ${CMAKE_BINARY_DIR} COPYONLY)
+﻿# העתקת כל תיקיית התמונות
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/images DESTINATION ${CMAKE_BINARY_DIR})
 
+# העתקת כל תיקיית הסאונד
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sounds DESTINATION ${CMAKE_BINARY_DIR})
+
+# העתקת הפונטים
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/fonts DESTINATION ${CMAKE_BINARY_DIR})
+
+# העתקת קובץ הלוח (אם הוא לא בתיקייה)
+configure_file("Board.txt" ${CMAKE_BINARY_DIR}/Board.txt COPYONLY)

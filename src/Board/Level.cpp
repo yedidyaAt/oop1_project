@@ -22,13 +22,14 @@ GamePlayStat Level::run(WindowManager& window)
 
     // update
     updateLevel();
-    m_bar.update();
-    m_bar.updateLayout(window.getSizeBar());
+    m_bar.update(window.getSizeBar());
 
     //draw
     window.clear();
 
+    window.activateGameView();
     drawLevel(window);
+
     window.activateBarView();
     m_bar.drawText(window);
 
@@ -53,6 +54,7 @@ void Level::setLevel(const std::vector<std::string>& board, LevelData& levelData
 {
   m_levelData = &levelData;
   m_bar.setLevelData(*m_levelData);
+  m_isTimerUp = false;
   resetTimer();
   Factory::instance().resetCounts();
 
@@ -65,7 +67,6 @@ void Level::setLevel(const std::vector<std::string>& board, LevelData& levelData
 
 void Level::drawBoard(WindowManager& window)
 {
-  window.activateGameView();
   drawStaticObj(window);
   drawMoveableObj(window, getMovableObj());
   m_player->draw(window);
@@ -240,26 +241,31 @@ void Level::handlGameStatus()
       m_gameRun = false;
     }
   }
-  else if (!m_isTimerUp && m_levelData->m_timer <= 3)
+  else if (m_levelData->m_timer <= 3)
+  {
+    if (!m_isTimerUp)
     {
       m_isTimerUp = true;
       SoundManager::instance().playSound(SoundType::COUNTDOWN);
     }
-    else if (m_levelData->m_timer <= 0) // time out
-  {
-    m_player->lifeLost();
 
-    if (m_levelData->m_life > 0) // if is have more atlist one life
+    if (m_levelData->m_timer <= 0) // time out
     {
-      resetTimer();
-      setCoinsLeft();
-      hardResetLevel();
-    }
-    else // dead caput
-    {
-      SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
-      m_gameStatus = GamePlayStat::GAME_OVER;
-      m_gameRun = false;
+      m_player->lifeLost();
+      m_levelData->m_life = m_player->getPackage().m_life;
+
+      if (m_levelData->m_life > 0) // if is have more atlist one life
+      {
+        resetTimer();
+        setCoinsLeft();
+        hardResetLevel();
+      }
+      else // dead caput
+      {
+        SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
+        m_gameStatus = GamePlayStat::GAME_OVER;
+        m_gameRun = false;
+      }
     }
   }
   else if (!m_levelData->m_coinLeft)
@@ -286,7 +292,6 @@ const std::vector<std::unique_ptr<MovingObject>>& Level::getMovableObj() const
 {
   return m_movableObj;
 }
-
 
 void Level::resetPosMoveablObj()
 {

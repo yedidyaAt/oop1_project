@@ -20,7 +20,13 @@ void GameBar::drawText(WindowManager& window)
   window.draw(m_timeText);
 }
 
-void GameBar::update()
+void GameBar::update(const sf::Vector2f& size)
+{
+  updateBar();
+  updateLayout(size);
+}
+
+void GameBar::updateBar()
 {
   if (!m_levelData)
     return;
@@ -57,7 +63,7 @@ void GameBar::alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, con
 {
   text.setScale({1.f, 1.f});
   const float slotWidth = barSize.x / totalSlots;
-  const float slotHight = barSize.y / totalSlots;
+  //const float slotHight = barSize.y / totalSlots;
 
   //setSize char
   const  unsigned int charSize = barSize.y * 0.5f; // 50% from the high
@@ -74,7 +80,7 @@ void GameBar::alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, con
   if (slotWidth < bound.size.x)
   {
     const float scaleX = slotWidth / bound.size.x;
-    const float scaleY = slotHight / bound.size.y;
+    const float scaleY = charSize / bound.size.y;
 
     const float scale = std::min(scaleX, scaleY);
     text.setScale({scale, scale});
