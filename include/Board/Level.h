@@ -4,10 +4,10 @@
 #include "Object.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "Const.h"
 #include "StaticObject.h"
 #include "Board.h"
 #include "GameBar.h"
+#include "GameStatus.h"
 
 class WindowManager;
 
@@ -17,7 +17,7 @@ public:
   Level();
 
 
-  GamePlayStat run(WindowManager& window);
+  GameStatus run(WindowManager& window);
 
   void setLevel(const std::vector<std::string>& board, LevelData& levelData);
 
@@ -59,7 +59,7 @@ private:
   Board m_board;
 
   sf::Clock m_clock;
-  GamePlayStat m_gameStatus;
+  GameStatus m_gameStatus;
   bool m_gameRun = true;
   bool m_isTimerUp = false;
   GameBar m_bar;

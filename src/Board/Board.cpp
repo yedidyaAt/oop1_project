@@ -1,9 +1,11 @@
 #include "Board.h"
-#include "Factory.h"
 #include "Player.h" 
+
+#include "Factory.h"
+#include "LevelData.h"
+#include "UiConfig.h"
+
 #include <iostream> 
-
-
 
 
 void Board::setPlayer(const Player* player)

@@ -17,4 +17,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/GameObjects
     ${CMAKE_CURRENT_SOURCE_DIR}/UI
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Enums   
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Config  
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/Data
 )

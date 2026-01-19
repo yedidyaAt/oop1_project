@@ -1,5 +1,8 @@
 #include "Resources.h"
 #include "Object.h"
+
+#include "UiConfig.h"
+
 #include <iostream>
 
 Object::Object(const sf::Vector2f& pos, ObjectSymbol symbol, bool isActive)
@@ -8,12 +11,6 @@ Object::Object(const sf::Vector2f& pos, ObjectSymbol symbol, bool isActive)
        {
         setSprite(pos);
        }
-
-
-Layer Object::getLayer()
-{
-    return Layer::STATIC;
-}
 
 sf::Vector2f Object::getPos() const
 {

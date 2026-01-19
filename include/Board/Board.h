@@ -4,9 +4,9 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "StaticObject.h" 
-#include "Const.h" 
 
 class Player;
+struct LevelData;;
 
 class Board {
 public:

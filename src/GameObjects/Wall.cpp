@@ -9,6 +9,7 @@
 #include "Enemy.h"
 
 #include "Factory.h"
+#include "LevelData.h"
 
 static bool registered = Factory::instance().registerType(ObjectSymbol::WALL,
   [](const sf::Vector2f& pos, const LevelData& data)

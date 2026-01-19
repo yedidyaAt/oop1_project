@@ -9,12 +9,15 @@
 #include "Rope.h"
 
 #include "Factory.h"
+#include "LevelData.h"
+#include "GameRules.h"
+#include "SoundType.h"
 #include <iostream>
 
 static bool registered = Factory::instance().registerType(ObjectSymbol::COIN,
   [](const sf::Vector2f& pos, const LevelData& data)
   {
-    int val = data.m_curLevel * GameConfig::Bar::COIN_SCORE;
+    int val = data.m_curLevel * GameRules::COIN_SCORE_VALUE;
     return std::make_unique<Coin>(pos,val);
   }
 );

@@ -24,7 +24,6 @@ protected:
   virtual void handleCollision(Rope& obj) override = 0;
 
   //delete no needs
-  Layer getLayer()override;
   sf::Vector2f getVelocity(const sf::Vector2f&, float speed, float deltaTime)const;
 
   sf::Vector2f getLastDir()const;

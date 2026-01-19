@@ -1,6 +1,8 @@
 #include "GameBar.h"
 #include "Resources.h"
 #include "string"
+#include "LevelData.h"
+#include "FontType.h"
 
 
 GameBar::GameBar()

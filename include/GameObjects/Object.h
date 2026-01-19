@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Const.h"
+
+#include "ObjectSymbol.h"
 
 class Player;
 class Enemy;
@@ -30,7 +31,6 @@ public:
 
   virtual void reset() = 0;
 
-  virtual Layer getLayer();
 
   sf::Vector2f getPos() const;
   ObjectSymbol getSymbol() const;

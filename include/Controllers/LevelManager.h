@@ -3,6 +3,8 @@
 #include "FileManager.h"
 #include "Level.h"
 
+#include "LevelData.h"
+
 
 class LevelManager
 {

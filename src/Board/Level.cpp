@@ -1,18 +1,25 @@
 #include <SFML/System/Vector2.hpp>
 #include "Level.h"
-#include "StaticObject.h"
 #include "Enemy.h"
-#include <iostream> // בשביל הדיבאג
-#include "GameBar.h"
-#include "WindowManager.h"
-#include "Factory.h"
+
+#include "StaticObject.h"
 #include "SmartEnemy.h"
+
+#include "WindowManager.h"
+#include "GameBar.h"
+#include "Factory.h"
+
+#include "SoundType.h"
+#include "LevelData.h"
+#include "UiConfig.h"
+
+#include <iostream> // בשביל הדיבאג
 
 Level::Level():m_levelData(nullptr)
 {
 }
 
-GamePlayStat Level::run(WindowManager& window)
+GameStatus Level::run(WindowManager& window)
 {
   m_gameRun = true;
   window.updateGameView(*this);
@@ -237,7 +244,7 @@ void Level::handlGameStatus()
     {
       SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
       sf::sleep(sf::seconds(3));
-      m_gameStatus = GamePlayStat::GAME_OVER;
+      m_gameStatus = GameStatus::GAME_OVER;
       m_gameRun = false;
     }
   }
@@ -263,7 +270,7 @@ void Level::handlGameStatus()
       else // dead caput
       {
         SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
-        m_gameStatus = GamePlayStat::GAME_OVER;
+        m_gameStatus = GameStatus::GAME_OVER;
         m_gameRun = false;
       }
     }
@@ -273,7 +280,7 @@ void Level::handlGameStatus()
     m_gameRun = false;
     SoundManager::instance().playSound(SoundType::LEVEL_COMPLETE);
     sf::sleep(sf::seconds(3));
-    m_gameStatus = GamePlayStat::FINISH_LEVEL;
+    m_gameStatus = GameStatus::FINISH_LEVEL;
   }
 }
 
@@ -311,7 +318,7 @@ void Level::resetStaticObj()
 
 void Level::resetTimer()
 {
-  m_levelData->m_timer = GameConfig::Bar::TIMER_TIME;
+  m_levelData->m_timer = GameRules::LEVEL_TIMER;
 }
 
 const  std::vector<std::vector<std::unique_ptr<StaticObject>>>& Level::getStaticObj() const

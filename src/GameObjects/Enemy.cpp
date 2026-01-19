@@ -5,6 +5,8 @@
 #include "SmartEnemy.h"
 
 #include "Factory.h"
+#include "LevelData.h"
+
 #include <iostream>
 
 static bool registered = Factory::instance().registerType(

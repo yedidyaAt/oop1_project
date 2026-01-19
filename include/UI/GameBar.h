@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
-#include "Const.h"
 #include "WindowManager.h"
 
 class Object;
+struct LevelData;;
 
 class GameBar
 {

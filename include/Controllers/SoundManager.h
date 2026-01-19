@@ -1,7 +1,8 @@
 #pragma once
 #include <SFML/Audio.hpp>
-#include "Const.h"
 #include <vector>
+
+#include "SoundType.h"
 
 class SoundManager
 {

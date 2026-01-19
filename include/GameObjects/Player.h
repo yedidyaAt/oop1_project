@@ -1,16 +1,10 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
-
+#include "Action.h"
 
 #include "MovingObject.h"
+#include "PlayerPackage.h"
 
-struct PlayerPackage
-{
-  int m_life     = 0 ;
-  int m_score    = 0 ;
-  int m_coinLeft = 0;
-  int m_curLevel = 0;
-};
 
 class Player : public MovingObject {
 public:

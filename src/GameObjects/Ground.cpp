@@ -7,7 +7,10 @@
 #include "Wall.h"
 #include "Ladder.h"
 #include "Rope.h"
+
 #include "Factory.h"
+#include "LevelData.h"
+
 
 static bool registered = Factory::instance().registerType(ObjectSymbol::GROUND,
   [](const sf::Vector2f& pos, const LevelData& data)

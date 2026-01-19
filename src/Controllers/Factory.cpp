@@ -1,5 +1,7 @@
 #include "Factory.h"
+
 #include "Object.h"
+
 
 Factory& Factory::instance()
 {

@@ -2,8 +2,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include "Const.h"
 #include <SFML/System/Vector2.hpp>
+#include "WindowConfig.h"
 
 
 class FileManager {

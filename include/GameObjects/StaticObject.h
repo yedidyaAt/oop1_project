@@ -1,7 +1,6 @@
 #pragma once
 #include "Object.h"
 
-class Level;
 class StaticObject: public Object
 {
 public:

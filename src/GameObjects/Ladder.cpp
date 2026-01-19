@@ -7,11 +7,14 @@
 #include "Enemy.h"
 #include "Wall.h"
 #include "Rope.h"
+
 #include "Factory.h"
+#include "LevelData.h"
 
 static bool registered = Factory::instance().registerType(ObjectSymbol::LADDER,
   [](const sf::Vector2f& pos, const LevelData& data)
   {
+    (void)data; // avoid warrnig
     return std::make_unique<Ladder>(pos);
   }
 );

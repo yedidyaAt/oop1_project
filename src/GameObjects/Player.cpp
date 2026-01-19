@@ -10,8 +10,11 @@
 #include "Coin.h"
 #include "Enemy.h"
 #include "Wall.h"
-#include "Factory.h"
 
+#include "Factory.h"
+#include "LevelData.h"
+#include "SoundType.h"
+#include "UiConfig.h"
 
 static bool registered = Factory::instance().registerType(ObjectSymbol::PLAYER,
   [](const sf::Vector2f& pos, const LevelData& data) 
@@ -167,7 +170,7 @@ void Player::addScroeCommplete()
 {
   if (!m_package.m_coinLeft)
   {
-    int score = m_package.m_curLevel * GameConfig::Bar::COMPLETE_LEVEL_SCORE;
+    int score = m_package.m_curLevel * GameRules::LEVEL_COMPLETE_BONUS;
     addScore(score);
   }
 }

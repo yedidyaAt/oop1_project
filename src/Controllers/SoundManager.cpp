@@ -1,7 +1,9 @@
+
 #include "SoundManager.h"
 #include "Resources.h"
-#include <iostream>
+#include "SoundType.h"
 
+#include <iostream>
 
 SoundManager& SoundManager::instance()
 {

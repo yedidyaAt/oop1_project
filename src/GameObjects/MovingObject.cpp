@@ -2,16 +2,13 @@
 #include <iostream>
 #include <cmath> 
 
+#include "PhysicsConfig.h"
+#include "UiConfig.h"
+#include "SoundType.h"
 
 MovingObject::MovingObject(const sf::Vector2f& position, ObjectSymbol symbol, bool isActive)
   :Object(position, symbol, isActive)
 {
-}
-
-
-Layer MovingObject::getLayer()
-{
-    return Layer::DYNAMICS;
 }
 
 sf::Vector2f MovingObject::getVelocity(const sf::Vector2f& dir, float speed, float deltaTime) const
@@ -28,12 +25,12 @@ void MovingObject::move(float deltaTime)
   sf::Vector2f dir = getDirection();
 
   // 2. חישוב X
-  currentVel.x = dir.x * GameConfig::Physics::SPEED;
+  currentVel.x = dir.x * PhysicsConfig::SPEED;
 
   // 3. חישוב Y (שימוש בפונקציות בלבד!)
   if (isOnLadder())
   {
-    currentVel.y = dir.y * GameConfig::Physics::SPEED;
+    currentVel.y = dir.y * PhysicsConfig::SPEED;
   }
   else if (isOnRope())
   {
@@ -45,7 +42,7 @@ void MovingObject::move(float deltaTime)
     // כבידה
     if (!isOnGround()) 
       {
-        currentVel.y += GameConfig::Physics::GRAVITY * deltaTime;
+        currentVel.y += PhysicsConfig::GRAVITY* deltaTime;
         checkFalling(currentVel.y);
       }
     else {
@@ -162,7 +159,7 @@ bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryC
 
   // 4. הגדרת ספים (Thresholds)
   // טווח כניסה רחב (20% מגודל תא)
-  float entryThreshold = UiConfig::TILE_SIZE * GameConfig::Physics::LADDER_SNAP_THRESHOLD;
+  float entryThreshold = UiConfig::TILE_SIZE * PhysicsConfig::LADDER_SNAP_THRESHOLD;
   // טווח "הידבקות" צר (כדי להשאיר את השחקן תפוס אם הוא כבר שם)
   float stickThreshold = 2.0f;
 
@@ -243,7 +240,7 @@ bool MovingObject::checkFallingOutsideMap()
 
 void MovingObject::checkFalling(float fallSpeed)
 {
-  float fallThreshold = GameConfig::Physics::FALL_THRESHOLD;
+  float fallThreshold = PhysicsConfig::FALL_THRESHOLD;
 
   if (!m_faling && fallSpeed > fallThreshold)
   {
@@ -317,7 +314,7 @@ void MovingObject::resolveOverlap(Object& obj)
 
   // --- Corner Correction (החלקה למנהרה) ---
   // אם ההתנגשות היא "קיר" (X < Y) אבל החפיפה האנכית קטנה מאוד
-  float cornerTolerance = UiConfig::TILE_SIZE* GameConfig::Physics::LADDER_SNAP_THRESHOLD;
+  float cornerTolerance = UiConfig::TILE_SIZE* PhysicsConfig::LADDER_SNAP_THRESHOLD;
 
   if (overlap->size.x < overlap->size.y)
   {

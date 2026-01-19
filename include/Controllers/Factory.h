@@ -3,7 +3,9 @@
 #include <map>
 #include <memory>
 #include <SFML/System/Vector2.hpp>
-#include "Const.h"
+
+#include "ObjectSymbol.h"
+#include "LevelData.h"
 
 class Object;
 

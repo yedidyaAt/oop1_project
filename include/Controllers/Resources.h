@@ -1,7 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "Const.h"
+
+#include "ObjectSymbol.h"
+#include "UiType.h"
+#include "SoundType.h"
+#include "FontType.h"
 
 class Resources
 {

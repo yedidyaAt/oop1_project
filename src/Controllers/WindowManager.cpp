@@ -1,10 +1,12 @@
 #include "WindowManager.h"
-#include "Const.h"
 #include "Level.h"
 
+#include "WindowConfig.h"
+#include "UiConfig.h"
+
 WindowManager::WindowManager()
-  : sf::RenderWindow(sf::VideoMode({ WindowConfig::WINDOW_WIDTH, WindowConfig::WINDOW_HEIGHT }),
-    WindowConfig::WINDOW_TITLE)
+  : sf::RenderWindow(sf::VideoMode({ WindowConfig::WIDTH, WindowConfig::HEIGHT }),
+    WindowConfig::TITLE)
 {
   setFramerateLimit(WindowConfig::FRAME_LIMIT);
 }
