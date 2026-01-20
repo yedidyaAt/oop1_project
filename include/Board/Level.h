@@ -60,7 +60,7 @@ private:
 
   sf::Clock m_clock;
   GameStatus m_gameStatus;
+  GameBar m_bar;
   bool m_gameRun = true;
   bool m_isTimerUp = false;
-  GameBar m_bar;
 };

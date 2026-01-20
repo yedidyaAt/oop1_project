@@ -249,7 +249,7 @@ void Level::handlGameStatus()
     }
   }
   else if (m_levelData->m_timer <= 3)
-  {
+    {
     if (!m_isTimerUp)
     {
       m_isTimerUp = true;

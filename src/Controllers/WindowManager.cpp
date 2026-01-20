@@ -11,6 +11,12 @@ WindowManager::WindowManager()
   setFramerateLimit(WindowConfig::FRAME_LIMIT);
 }
 
+void WindowManager::updateDefaultView()
+{
+  sf::FloatRect visibleArea({ 0, 0 }, { WindowConfig::WIDTH, WindowConfig::HEIGHT});
+  setView(sf::View(visibleArea));
+}
+
 void WindowManager::updateView(const sf::Event::Resized* resized)
 {
   sf::FloatRect visibleArea({ 0, 0 }, { (float)resized->size.x, (float)resized->size.y });

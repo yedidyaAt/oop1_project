@@ -15,6 +15,10 @@ GameMenu::GameMenu(WindowManager& window)  :
 
 ButtonType GameMenu::run()
 {
+  m_window.updateDefaultView();
+  updateLayout(m_window.getDefaultView().getSize());
+
+
   ButtonType curStatus = ButtonType::NONE;
 
   while (m_window.isOpen())
@@ -105,7 +109,6 @@ ButtonType GameMenu::handle(const sf::Event::Resized& resized)
 
   return ButtonType::NONE;
 }
-
 
 void GameMenu::updateLayout(const sf::Vector2f& windowSize)
 {

@@ -9,13 +9,15 @@
 class LevelManager
 {
 public:
-  LevelManager();
+  LevelManager(WindowManager& window);
 
   void run();
 
 private:
-  Level m_level;
+  void setLevelData();
+
+  WindowManager& m_window;
   FileManager m_fm;
-  WindowManager m_window;
   LevelData m_levelData;
+  Level m_level;
 };
