@@ -9,5 +9,5 @@ enum class ObjectSymbol : char
     GROUND = '^',
     LADDER = 'H',
     ROPE   = '-',
-    EMPTY  = ' ',
+    NONE  = ' ',
 };

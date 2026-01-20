@@ -8,6 +8,9 @@ class WindowManager : public sf::RenderWindow
 public:
   WindowManager();
 
+  void updateView(const sf::Event::Resized* resized);
+
+
   void updateGameView(const Level& level, const sf::Event::Resized* resized);
   void updateGameView(const Level& level);
 

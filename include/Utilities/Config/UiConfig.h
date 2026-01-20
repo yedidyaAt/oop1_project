@@ -4,30 +4,25 @@
 
 namespace UiConfig
 {
-    // Layout
-    inline constexpr float MENU_PERCENT = 0.2f; 
-    inline constexpr float BOARD_PERCENT = 0.8f; 
-    inline constexpr float BUTTON_PADDING = 0.1f;
-    inline constexpr float TILE_SIZE = 50.f;
+    // Boad
+  inline constexpr float TILE_SIZE = 50.f;
 
-    // Fonts & Textures
-    inline constexpr float FONT_SIZE_RELATIVE = 0.5f;
-    
+  //button menu size
+  inline constexpr float BUTTON_WIDTH_RATIO = 0.3f;
+  inline constexpr float BUTTON_HIGHT_RATIO = 0.1f;
+  inline constexpr float BUTTON_FONT_SIZE_RATIO = 0.8f;
+  inline constexpr float BUTTON_GAP_RATIO = 0.05f;
+  inline constexpr int   BUTTON_CNT   = 3;
+
+  //background button
+  inline constexpr float BUTTON_PAD_X = 0.05f;
+  inline constexpr float BUTTON_PAD_Y = 0.05f;
 
 
-    inline constexpr float FONT_WIDTH_RELATIVE = 1.f / GameRules::NUM_UI_DETAILS; 
-    inline constexpr float FONT_Y_PERCENT = FONT_SIZE_RELATIVE * 0.5f;
 
-    // Positions
-    inline constexpr float POS_X_LEVEL = 0.03f;
-    inline constexpr float POS_X_LIFE  = 0.3f;
-    inline constexpr float POS_X_SCORE = 0.5f;
-    
-    inline constexpr float POS_X_TIMER = 0.7f;
+  //button type
+  inline constexpr std::string_view  START_STR = "START";
+  inline constexpr std::string_view  HELP_STR = "HELP";
+  inline constexpr std::string_view  EXIT_STR = "EXIT";
 
-    // Strings
-    inline constexpr std::string_view STR_LEVEL = "LEVEL";
-    inline constexpr std::string_view STR_LIFE  = "LIFE";
-    inline constexpr std::string_view STR_SCORE = "SCORE";
-    inline constexpr std::string_view STR_TIMER = "TIMER";
 }

@@ -18,7 +18,6 @@ public:
 private:
   void updateBar();
   void updateLayout(const sf::Vector2f& size);
-  void initTexts();
   void alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, const sf::Vector2f& barSize);
   
   sf::Text m_scoreText;

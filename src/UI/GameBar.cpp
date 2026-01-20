@@ -11,7 +11,6 @@ GameBar::GameBar()
    m_timeText(Resources::instance().getFont(FontType::Damned)),
    m_levelText(Resources::instance().getFont(FontType::Damned))
 {
-  initTexts();
 }
 
 void GameBar::drawText(WindowManager& window)
@@ -50,15 +49,6 @@ void GameBar::updateLayout(const sf::Vector2f& size)
 void GameBar::setLevelData(const LevelData& levelData)
 {
   m_levelData = &levelData;
-}
-
-void GameBar::initTexts()
-{
-  
-  m_levelText.setString("LEVEL");
-  m_livesText.setString("LIVE");
-  m_scoreText.setString("SCORE");
-  m_timeText.setString("TIMER");
 }
 
 void GameBar::alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, const sf::Vector2f& barSize)

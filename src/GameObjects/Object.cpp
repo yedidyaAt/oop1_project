@@ -6,7 +6,7 @@
 #include <iostream>
 
 Object::Object(const sf::Vector2f& pos, ObjectSymbol symbol, bool isActive)
-      :m_sprite(Resources::instance().getObjectTexture(ObjectSymbol::EMPTY))
+      :m_sprite(Resources::instance().getObjectTexture(ObjectSymbol::NONE))
       ,m_startPos(pos), m_symbol(symbol), m_isActive(isActive)
        {
         setSprite(pos);

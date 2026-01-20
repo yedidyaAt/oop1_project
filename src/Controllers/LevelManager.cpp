@@ -1,7 +1,7 @@
 #include "LevelManager.h"
 #include "Resources.h"
 #include "SoundManager.h"
-
+#include "WindowManager.h"
 
 #include <iostream>
 
