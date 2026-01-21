@@ -4,8 +4,13 @@
 
 namespace UiConfig
 {
-    // Boad
+    // Board
   inline constexpr float TILE_SIZE = 50.f;
+
+  //HELP SCREEN
+  inline constexpr float HEIGHT_HELP_SCREEN_TOP_RATIO = 0.85f;
+  inline constexpr float HEIGHT_HELP_SCREEN_BOTTOM_RATIO = 0.15f;
+
 
   //button menu size
   inline constexpr float BUTTON_WIDTH_RATIO = 0.3f;

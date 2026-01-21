@@ -10,31 +10,27 @@ Resources& Resources::instance() {
 void Resources::loadResources()
 {
   bool texturesLoaded =
-    // borad object
-    m_playerTexture.loadFromFile("player.png") &&
-    m_enemyTexture.loadFromFile("enemy.png") &&
-    m_wallTexture.loadFromFile("wall.png") &&
-    m_coinTexture.loadFromFile("coin.png") &&
-    m_groundTexture.loadFromFile("ground.png") &&
-    m_ladderTexture.loadFromFile("ladder.png") &&
-    m_ropeTexture.loadFromFile("rope.png") &&
-    m_emptyTexture.loadFromFile("empty.png") &&
-    // UI
-    m_exitTexture.loadFromFile("exit.png") &&
-    m_restartTexture.loadFromFile("restart.png") &&
-    m_helpTexture.loadFromFile("help.png") &&
-    m_startTexture.loadFromFile("start.png");
+    m_playerTexture.loadFromFile("images/objectPic/player.png") &&
+    m_enemyTexture.loadFromFile("images/objectPic/enemy.png") &&
+    m_wallTexture.loadFromFile("images/objectPic/wall.png") &&
+    m_coinTexture.loadFromFile("images/objectPic/coin.png") &&
+    m_groundTexture.loadFromFile("images/objectPic/ground.png") &&
+    m_ladderTexture.loadFromFile("images/objectPic/ladder.png") &&
+    m_ropeTexture.loadFromFile("images/objectPic/rope.png") &&
+    m_emptyTexture.loadFromFile("images/objectPic/empty.png");
+    
 
   bool soundsLoaded =
-    m_coinBuffer.loadFromFile("gotCoin.mp3") &&
-    m_lifeLostBuffer.loadFromFile("lifeLost.mp3") &&
-    m_fallBuffer.loadFromFile("playerfalling.mp3") &&
-    m_smashedBuffer.loadFromFile("playerSmashed.mp3") &&
-    m_countdownBuffer.loadFromFile("gameCountdown.mp3") &&
-    m_levelCompleteBuffer.loadFromFile("finishLevel.mp3")&&
-    m_gameOverVoiceBuffer.loadFromFile("gameOverVoice.mp3");
+    m_coinBuffer.loadFromFile("sounds/gotCoin.mp3") &&
+    m_lifeLostBuffer.loadFromFile("sounds/lifeLost.mp3") &&
+    m_fallBuffer.loadFromFile("sounds/playerfalling.mp3") &&
+    m_smashedBuffer.loadFromFile("sounds/playerSmashed.mp3") &&
+    m_countdownBuffer.loadFromFile("sounds/gameCountdown.mp3") &&
+    m_levelCompleteBuffer.loadFromFile("sounds/finishLevel.mp3")&&
+    m_gameOverVoiceBuffer.loadFromFile("sounds/gameOverVoice.mp3")&&
+    m_gtaMenuBuffer.loadFromFile("sounds/gtaMenu.wav");
 
-  bool fontsLoaded = m_damned.openFromFile("Damned.ttf");
+  bool fontsLoaded = m_damned.openFromFile("fonts/Damned.ttf");
 
   if (!texturesLoaded || !soundsLoaded || !fontsLoaded) {
     std::cerr << "Error: Failed to load resources!" << std::endl;
@@ -58,17 +54,6 @@ const sf::Texture& Resources::getObjectTexture(ObjectSymbol symbol) const
   }
 }
 
-const sf::Texture& Resources::getUiTexture(UiType type) const
-{
-  switch (type)
-  {
-  case UiType::START_BUTTON:   return m_startTexture;
-  case UiType::EXIT_BUTTON:    return m_exitTexture;
-  case UiType::RESTART_BUTTON: return m_restartTexture;
-  case UiType::HELP_BUTTON:    return m_helpTexture;
-  default:                     return m_startTexture;
-  }
-}
 
 const sf::SoundBuffer& Resources::getSoundBuffer(SoundType type) const
 {
@@ -81,6 +66,7 @@ const sf::SoundBuffer& Resources::getSoundBuffer(SoundType type) const
   case SoundType::COUNTDOWN:        return m_countdownBuffer;
   case SoundType::LEVEL_COMPLETE:   return m_levelCompleteBuffer;
   case SoundType::GAME_OVER_VOICE:  return m_gameOverVoiceBuffer;
+  case SoundType::GTA_MENU:         return m_gtaMenuBuffer;
   default:                          return m_coinBuffer; // сън Safe Fallback
   }
 }

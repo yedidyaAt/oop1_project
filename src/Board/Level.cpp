@@ -22,6 +22,7 @@ Level::Level():m_levelData(nullptr)
 GameStatus Level::run(WindowManager& window)
 {
   m_gameRun = true;
+  m_clock.reset();
   window.updateGameView(*this);
 
   while (window.isOpen() && m_gameRun)

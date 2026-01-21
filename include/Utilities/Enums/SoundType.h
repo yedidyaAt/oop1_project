@@ -8,5 +8,6 @@ enum class SoundType
     SMASHED,          
     COUNTDOWN,        
     LEVEL_COMPLETE,   
-    GAME_OVER_VOICE   
+    GAME_OVER_VOICE,
+    GTA_MENU
 };

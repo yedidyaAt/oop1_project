@@ -3,7 +3,6 @@
 #include <SFML/Audio.hpp>
 
 #include "ObjectSymbol.h"
-#include "UiType.h"
 #include "SoundType.h"
 #include "FontType.h"
 
@@ -15,8 +14,6 @@ public:
   void loadResources();
 
   const sf::Texture& getObjectTexture(ObjectSymbol symbol) const;
-
-  const sf::Texture& getUiTexture(UiType type) const;
 
   const sf::SoundBuffer& getSoundBuffer(SoundType type) const;
 
@@ -49,6 +46,8 @@ private:
   sf::SoundBuffer m_countdownBuffer;
   sf::SoundBuffer m_levelCompleteBuffer;
   sf::SoundBuffer m_gameOverVoiceBuffer;  // הקול
+  sf::SoundBuffer m_gtaMenuBuffer;  // הקול
+
 
   // --- Fonts ---
   sf::Font m_damned;

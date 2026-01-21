@@ -1,4 +1,5 @@
 #include "GameController.h"
+#include "HelpScreen.h"
 
 #include "Resources.h"
 #include "SoundManager.h"
@@ -24,7 +25,7 @@ void GameController::run()
       m_levels.run();
       break;
     case ButtonType::HELP:
-      //std::cout << "you click HELP" << std::endl;
+      HelpScreen(m_window).run();
       break;
     case ButtonType::EXIT:
       //std::cout << "you click EXIT" << std::endl;

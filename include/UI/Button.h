@@ -13,6 +13,9 @@ public:
   void handlHover(const sf::Vector2f& hoverPos);
   ButtonType handlClick(const sf::Vector2f& clickPos);
 
+  sf::FloatRect getLocalBounds()const;
+  sf::FloatRect getGlobalBounds()const;
+  void setScale(const sf::Vector2f& s);
 
   void setButtonType(ButtonType type);
   void setPos(float x, float y);

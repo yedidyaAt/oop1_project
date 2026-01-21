@@ -1,6 +1,8 @@
 #include "Button.h"
 #include "UiConfig.h"
 
+#include "SoundManager.h"
+
 Button::Button(const sf::Font& font, ButtonType type) :m_text(font)
 {
   setButtonTextByType(type);
@@ -19,6 +21,7 @@ void Button::handlHover(const sf::Vector2f& hoverPos)
 	{
 		if (!m_isHover)
 		{
+			SoundManager::instance().playSound(SoundType::GTA_MENU);
 			m_text.setFillColor(sf::Color::Black);
 			m_background.setFillColor(sf::Color::White);
 			m_isHover = true;
@@ -41,6 +44,22 @@ ButtonType Button::handlClick(const sf::Vector2f& clickPos)
 	}
 
 	return ButtonType::NONE;
+}
+
+sf::FloatRect Button::getLocalBounds() const
+{
+	return m_background.getLocalBounds();
+}
+
+sf::FloatRect Button::getGlobalBounds() const
+{
+	return m_background.getGlobalBounds();
+}
+
+void Button::setScale(const sf::Vector2f& s)
+{
+	m_text.setScale({ s.x,s.y });
+	m_background.setScale({ s.x,s.y });
 }
 
 void Button::setButtonType(ButtonType type)
