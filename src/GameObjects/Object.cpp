@@ -10,6 +10,7 @@ Object::Object(const sf::Vector2f& pos, ObjectSymbol symbol, bool isActive)
       ,m_startPos(pos), m_symbol(symbol), m_isActive(isActive)
        {
         setSprite(pos);
+        setScaleSprite();
        }
 
 sf::Vector2f Object::getPos() const
@@ -25,22 +26,20 @@ void Object::setPos(const sf::Vector2f& newPos)
 void Object::setSprite(const sf::Vector2f& pos)
 {
   m_sprite.setPosition(pos);
-  m_sprite.setTexture(Resources::instance().getObjectTexture(m_symbol));
+  m_sprite.setTexture(Resources::instance().getObjectTexture(m_symbol),true);
+
+  auto texSize = m_sprite.getTexture().getSize();
 }
 
 void Object::setScaleSprite()
 {
   sf::Vector2u texS = m_sprite.getTexture().getSize();
 
-  // --- הדפסת דיבאג ---
-  std::cout << "Tile Size: " << UiConfig::TILE_SIZE
-    << " | Texture Size: " << texS.x << "x" << texS.y << std::endl;
-
   float scaleX = UiConfig::TILE_SIZE / (float)texS.x;
   float scaleY = UiConfig::TILE_SIZE / (float)texS.y;
-
-  //float scale = std::min(scaleX, scaleY);
-
+  
+  float scale = std::min(scaleX, scaleY);
+  
   m_sprite.setScale({ scaleX,scaleY });
 }
 
