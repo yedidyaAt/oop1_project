@@ -20,5 +20,7 @@ public:
 
   sf::Vector2f getDirection()override ;
 private:
+  sf::Vector2f getHafeSmartDir()const;
+  sf::Vector2f getSmartNextDir(const sf::Vector2f& start,const sf::Vector2f& target)const;
 };
 

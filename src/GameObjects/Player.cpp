@@ -48,7 +48,8 @@ void Player::update(float deltaTime)
 
 sf::Vector2f Player::getDirection()
 {
-  return InputHandler::getMovementInput();
+  auto dir = mapAction(InputHandler::getMovementInput());
+  return static_cast<sf::Vector2f>(dir);
 }
 
 void Player::handleCollision(Object& obj)
@@ -124,8 +125,8 @@ void Player::digGround()
 {
   const sf::Vector2f digPos = getDigPos();
 
-  if (m_borad)
-    m_borad->tryToDig(digPos);
+  if (m_board)
+    m_board->tryToDig(digPos);
 }
 
 void Player::handlFallingOutside()
@@ -143,11 +144,11 @@ sf::Vector2f Player::ActionToPos(Action action) const
   const float tileSize = UiConfig::TILE_SIZE;
   sf::Vector2f digPos = { 0, curCenterPos.y + tileSize };
 
-  if (action == Action::DIG_LEFT)
+  if (action == Action::DIG_LEFT_DOWN)
   {
     digPos.x = curCenterPos.x - tileSize;
   }
-  else if (action == Action::DIG_RIGHT)
+  else if (action == Action::DIG_RIGHT_DOWN)
   {
     digPos.x = curCenterPos.x + tileSize;
   }
@@ -157,7 +158,7 @@ sf::Vector2f Player::ActionToPos(Action action) const
 
 sf::Vector2f Player::getDigPos() const
 {
-  Action action = InputHandler::getActionInput();
+  Action action = InputHandler::getDigInput();
   return ActionToPos(action);
 }
 

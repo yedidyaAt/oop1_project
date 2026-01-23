@@ -68,7 +68,9 @@ sf::Vector2f DumbEnemy::getDirection()
 {
   if (m_changeDirTimer <= 0)
   {
-    m_currentDir = InputHandler::getRandomInput();
+    auto dir = mapAction(InputHandler::getRandomMovementInput());
+    
+    m_currentDir = static_cast<sf::Vector2f>(dir);
     // זמן רנדומלי בין 1 ל-3 שניות
     m_changeDirTimer = (std::rand() % 200 + 100) / 100.0f;
   }

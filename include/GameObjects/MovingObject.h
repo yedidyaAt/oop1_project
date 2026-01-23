@@ -45,7 +45,8 @@ protected:
   virtual sf::Vector2f getDirection() = 0;
   void move(float deltaTime);
   void setLastDir(const sf::Vector2f& dir );
-  bool isOnObject(const Object& obj);
+  bool isOnObject(const Object& obj)const;
+  bool isOnObject(const Object* obj)const;
 
   void handleLadderLogic(const Object& ladder);
   void handleRopeLogic(const Object& rope);
@@ -60,7 +61,7 @@ protected:
   void checkFalling(float fallSpeed);
   void checkSmashed();
 
-  Board* m_borad = nullptr;
+  Board* m_board = nullptr;
 private:
   sf::Vector2f m_lastDir;
   sf::Vector2f m_velocity = { 0,0 };

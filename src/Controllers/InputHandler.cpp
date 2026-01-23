@@ -1,32 +1,35 @@
 #include "InputHandler.h"
 
-sf::Vector2f InputHandler::getMovementInput()
+Action InputHandler::getMovementInput()
 {
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D))
-    return sf::Vector2f(1, 0);
-  else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
-    return sf::Vector2f(-1, 0);
-  else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W))
-    return sf::Vector2f(0, -1);
-  else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S))
-    return sf::Vector2f(0, 1);
+    return Action::MOVE_RIGHT;
 
-  return sf::Vector2f(0, 0);
-}
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
+    return Action::MOVE_LEFT;
 
-Action InputHandler::getActionInput()
-{
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Z))
-    return Action::DIG_LEFT;
-  else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::X))
-    return Action::DIG_RIGHT;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W))
+    return Action::MOVE_UP;
+
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S))
+    return Action::MOVE_DOWN;
 
   return Action::NONE;
 }
 
-sf::Vector2f InputHandler::getRandomInput()
+Action InputHandler::getDigInput()
 {
-  sf::Vector2f arr[4] = { {-1,0},{1,0},{0,-1},{0,1} };
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Z))
+    return Action::DIG_LEFT_DOWN;
+  else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::X))
+    return Action::DIG_RIGHT_DOWN;
+
+  return Action::NONE;
+}
+
+Action InputHandler::getRandomMovementInput()
+{
+  Action move[4] = { Action::MOVE_DOWN,Action::MOVE_UP,Action::MOVE_LEFT,Action::MOVE_RIGHT};
   auto geussing = std::rand() % 4;
-  return arr[geussing];
+  return move[geussing];
 }

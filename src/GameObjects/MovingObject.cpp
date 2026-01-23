@@ -125,7 +125,7 @@ void MovingObject::setLastDir(const sf::Vector2f& dir)
   m_lastDir = dir;
 }
 
-bool MovingObject::isOnObject(const Object& obj)
+bool MovingObject::isOnObject(const Object& obj)const
 {
   const auto& overlap = getBoundRec().findIntersection(obj.getBoundRec());
   
@@ -135,6 +135,15 @@ bool MovingObject::isOnObject(const Object& obj)
     return true;
 
   return false;
+}
+
+bool MovingObject::isOnObject(const Object* obj) const
+{
+  std::cout << obj << std::endl;
+  if (!obj)
+    return false;
+
+  return isOnObject(*obj);
 }
 
 bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryCondition)
@@ -192,9 +201,9 @@ bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryC
 
 void MovingObject::keepObjInsideMap()
 {
-  if (!m_borad) return;
+  if (!m_board) return;
 
-  sf::Vector2u gridDimensions = m_borad->getSizeBoard();
+  sf::Vector2u gridDimensions = m_board->getSizeBoard();
 
   float mapWidth = gridDimensions.x * UiConfig::TILE_SIZE;
  
@@ -221,10 +230,10 @@ void MovingObject::keepObjInsideMap()
 
 bool MovingObject::checkFallingOutsideMap()
 {
-  if (!m_borad)
+  if (!m_board)
     return false;
 
-  sf::Vector2u boardSize = m_borad->getSizeBoard();
+  sf::Vector2u boardSize = m_board->getSizeBoard();
   float tileSize = UiConfig::TILE_SIZE;
   float mapHight = boardSize.y * tileSize;
   sf::Vector2f curPos = getPos();
@@ -262,7 +271,7 @@ void MovingObject::checkSmashed()
 
 void MovingObject::setBoradPtr(Board& board)
 {
-  m_borad = &board;
+  m_board = &board;
 }
 
 void MovingObject::reset()

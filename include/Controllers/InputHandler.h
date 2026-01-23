@@ -5,8 +5,8 @@
 class InputHandler
 {
 public:
-  static sf::Vector2f getMovementInput();
-  static Action getActionInput(); 
-  static sf::Vector2f getRandomInput();
+  static Action getMovementInput();
+  static Action getDigInput(); 
+  static Action getRandomMovementInput();
 private:
 };
