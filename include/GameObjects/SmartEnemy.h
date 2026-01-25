@@ -7,7 +7,7 @@ class SmartEnemy : public Enemy
 public:
 	SmartEnemy(const sf::Vector2f& position, bool isActive = true);
 
-	void update(float deltaTime) override;
+	void update(float deltaTime, const LevelData* levelData) override;
 
   void handleCollision(Object& obj)  override;
   void handleCollision(Player& obj)  override;

@@ -36,6 +36,10 @@ private:
 
   void updateLevelData(float dt);
   void handlGameStatus();
+  void gameOver();
+  void checkPlayerDied();
+  void checkTimer();
+  void checkLevelComplete();
   void resetLevel();
   void hardResetLevel();
   void resetPosMoveablObj();

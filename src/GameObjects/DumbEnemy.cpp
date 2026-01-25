@@ -18,7 +18,7 @@ DumbEnemy::DumbEnemy(const sf::Vector2f& position, bool isActive)
   m_changeDirTimer = 0;
 }
 
-void DumbEnemy::update(float deltaTime)
+void DumbEnemy::update(float deltaTime, const LevelData* levelData)
 {
   if (!isActive())
     return;

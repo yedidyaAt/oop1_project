@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "ObjectSymbol.h"
+#include "LevelData.h"
 
 class Player;
 class Enemy;
@@ -17,7 +18,7 @@ public:
   Object(const sf::Vector2f& position, ObjectSymbol symbol, bool isActive = true);
   virtual ~Object() = default; 
 
-  virtual void update(float deltaTime) = 0;
+  virtual void update(float deltaTime, const LevelData* levelData) = 0;
 
  
   virtual void handleCollision(Object& obj) =0;

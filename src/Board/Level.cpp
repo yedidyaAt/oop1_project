@@ -12,6 +12,7 @@
 #include "SoundType.h"
 #include "LevelData.h"
 #include "UiConfig.h"
+#include "DeathReason.h"
 
 #include <iostream> // בשביל הדיבאג
 
@@ -51,8 +52,9 @@ GameStatus Level::run(WindowManager& window)
       if (event->is<sf::Event::Closed>())
         window.close();
 
-      else if (const auto& resized = event->getIf<sf::Event::Resized>())
+      else if (const auto& resized = event->getIf<sf::Event::Resized>())      
         window.updateGameView(*this, resized);
+
     }
   }
 
@@ -157,10 +159,10 @@ void Level::resizeMap()
 void Level::updateObject(const float deltaTime)
 {
 
-  m_player->update(deltaTime);
+  m_player->update(deltaTime,m_levelData);
 
   for (auto& object : m_movableObj)
-    object->update(deltaTime);
+    object->update(deltaTime,m_levelData);
 }
 
 void Level::handlColisions()
@@ -239,48 +241,101 @@ void Level::updateLevelData(float dt)
 
 void Level::handlGameStatus()
 {
-  if (!m_player->isActive()) // if player dead
+  //if (!m_player->isActive()) // if player dead
+  //{
+  //  if (m_levelData->m_life > 0) 
+  //  {
+  //    resetLevel();
+  //  }
+  //  else // dead caput
+  //  {
+  //    SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
+  //    sf::sleep(sf::seconds(3));
+  //    m_gameStatus = GameStatus::GAME_OVER;
+  //    m_gameRun = false;
+  //  }
+  //}
+  //else if (m_levelData->m_timer <= 3)
+  //  {
+  //  if (!m_isTimerUp)
+  //  {
+  //    m_isTimerUp = true;
+  //    SoundManager::instance().playSound(SoundType::COUNTDOWN);
+  //  }
+
+  //  if (m_levelData->m_timer <= 0) // time out
+  //  {
+  //    m_player->lifeLost();
+  //    m_levelData->m_life = m_player->getPackage().m_life;
+
+  //    if (m_levelData->m_life > 0) // if is have more atlist one life
+  //    {
+  //      hardResetLevel();
+  //    }
+  //    else // dead caput
+  //    {
+  //      SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
+  //      m_gameStatus = GameStatus::GAME_OVER;
+  //      m_gameRun = false;
+  //    }
+  //  }
+  //}
+  //else if (!m_levelData->m_coinLeft)
+  //{
+  //  m_gameRun = false;
+  //  SoundManager::instance().playSound(SoundType::LEVEL_COMPLETE);
+  //  sf::sleep(sf::seconds(3));
+  //  m_gameStatus = GameStatus::FINISH_LEVEL;
+  //}
+
+  checkPlayerDied();
+  checkTimer();
+  checkLevelComplete();
+}
+
+void Level::gameOver()
+{
+  SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
+  sf::sleep(sf::seconds(3));
+  m_gameStatus = GameStatus::GAME_OVER;
+  m_gameRun = false;
+}
+
+void Level::checkPlayerDied()
+{
+  DeathReason deathReason = m_player->getDeathReason();
+
+  if (m_levelData->m_life <= 0)
   {
-    if (m_levelData->m_life > 0) 
-    {
-      resetLevel();
-    }
-    else // dead caput
-    {
-      SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
-      sf::sleep(sf::seconds(3));
-      m_gameStatus = GameStatus::GAME_OVER;
-      m_gameRun = false;
-    }
+    gameOver();
+    return;
   }
-  else if (m_levelData->m_timer <= 3)
-    {
+
+  if (deathReason == DeathReason::KILLED)
+  {
+    resetLevel();
+  }
+  else if (deathReason == DeathReason::TIMES_UP)
+  {
+    hardResetLevel();
+  }
+}
+
+void Level::checkTimer()
+{
+  if (m_levelData->m_timer <= 3)
+  {
     if (!m_isTimerUp)
     {
       m_isTimerUp = true;
       SoundManager::instance().playSound(SoundType::COUNTDOWN);
     }
-
-    if (m_levelData->m_timer <= 0) // time out
-    {
-      m_player->lifeLost();
-      m_levelData->m_life = m_player->getPackage().m_life;
-
-      if (m_levelData->m_life > 0) // if is have more atlist one life
-      {
-        resetTimer();
-        setCoinsLeft();
-        hardResetLevel();
-      }
-      else // dead caput
-      {
-        SoundManager::instance().playSound(SoundType::GAME_OVER_VOICE);
-        m_gameStatus = GameStatus::GAME_OVER;
-        m_gameRun = false;
-      }
-    }
   }
-  else if (!m_levelData->m_coinLeft)
+}
+
+void Level::checkLevelComplete()
+{
+  if (!m_levelData->m_coinLeft)
   {
     m_gameRun = false;
     SoundManager::instance().playSound(SoundType::LEVEL_COMPLETE);
@@ -298,6 +353,8 @@ void Level::hardResetLevel()
 {
   resetPosMoveablObj();
   resetStaticObj();
+  setCoinsLeft();
+  resetTimer();
 }
 
 const std::vector<std::unique_ptr<MovingObject>>& Level::getMovableObj() const
@@ -323,6 +380,7 @@ void Level::resetStaticObj()
 
 void Level::resetTimer()
 {
+  m_isTimerUp = false;
   m_levelData->m_timer = GameRules::LEVEL_TIMER;
 }
 

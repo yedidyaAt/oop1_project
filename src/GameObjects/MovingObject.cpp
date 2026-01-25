@@ -201,7 +201,7 @@ bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryC
   // טווח כניסה רחב (20% מגודל תא)
   float entryThreshold = UiConfig::TILE_SIZE * PhysicsConfig::LADDER_SNAP_THRESHOLD;
   // טווח "הידבקות" צר (כדי להשאיר את השחקן תפוס אם הוא כבר שם)
-  float stickThreshold = 20.0f;
+  float stickThreshold = UiConfig::TILE_SIZE*0.1f;
 
   // --- לוגיקה 1: תחזוקה (Stickiness) ---
   // אם אנחנו כבר ממש קרובים למרכז, נשארים שם (מתעלמים מתנאי הכניסה)

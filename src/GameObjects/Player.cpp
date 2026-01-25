@@ -33,16 +33,19 @@ Player::Player(const sf::Vector2f& position, const PlayerPackage& package, bool 
               :MovingObject(position,ObjectSymbol::PLAYER,isActive)
 {
   m_package = package;
+  m_deadReason = DeathReason::NONE;
 }
 
-void Player::update(float deltaTime)
+void Player::update(float deltaTime,const LevelData* levelData)
 {
   if (!isActive())
     return;
+
   move(deltaTime);
   digGround();
   keepObjInsideMap();
   handlFallingOutside();
+  checkTimerUp(levelData);
 }
 
 
@@ -64,7 +67,7 @@ void Player::handleCollision(Player& obj)
 
 void Player::handleCollision(Enemy& obj)
 {
-  lifeLost();
+  playerKilled();
 }
 
 void Player::handleCollision(Coin& obj)
@@ -101,17 +104,47 @@ void Player::setCoinCreated(int cnt)
   m_package.m_coinLeft = cnt;
 }
 
+void Player::checkTimerUp(const LevelData* levelData)
+{
+  if (levelData->m_timer <= 0)
+    timesUp();
+}
+
+void Player::playerKilled()
+{
+  lifeLost();
+  m_deadReason = DeathReason::KILLED;
+}
+
+void Player::timesUp()
+{
+  lifeLost();
+  m_deadReason = DeathReason::TIMES_UP;
+}
+
+void Player::reset()
+{
+  MovingObject::reset();
+  m_deadReason = DeathReason::NONE;
+}
+
 void Player::lifeLost()
 { 
   SoundManager::instance().playSound(SoundType::LIFE_LOST);
   sf::sleep(sf::seconds(2));
   destroy();
   m_package.m_life--;
+
 }
 
 const PlayerPackage& Player::getPackage() const
 {
   return m_package;
+}
+
+DeathReason Player::getDeathReason() const
+{
+    return m_deadReason;
 }
 
 void Player::takeCoin(int value)
@@ -132,7 +165,7 @@ void Player::digGround()
 void Player::handlFallingOutside()
 {
   if (checkFallingOutsideMap())
-    lifeLost();
+    playerKilled();
 }
 
 sf::Vector2f Player::ActionToPos(Action action) const

@@ -7,7 +7,7 @@ class Enemy :public MovingObject
 public:
   Enemy(const sf::Vector2f& position, bool isActive = true);
 
-     virtual void update(float deltaTime) override = 0;
+     virtual void update(float deltaTime, const LevelData* levelData) override = 0;
 
     virtual void handleCollision(Object& obj) override = 0;
     virtual void handleCollision(Player& obj) override = 0;

@@ -18,7 +18,7 @@ SmartEnemy::SmartEnemy(const sf::Vector2f& position,bool isActive)
                       :Enemy(position, isActive){}
 
 
-void SmartEnemy::update(float deltaTime)
+void SmartEnemy::update(float deltaTime, const LevelData* levelData)
 {
   if (!isActive())
     return;
@@ -65,8 +65,8 @@ void SmartEnemy::handleCollision(Rope& obj)
 
 sf::Vector2f SmartEnemy::getDirection()
 {
-  //return getSmartNextDir(getPos(),m_board->getPlayerPosition());
-  return getHafeSmartDir();
+  return getSmartNextDir(getPos(),m_board->getPlayerPosition());
+  //return getHafeSmartDir();
 }
 
 sf::Vector2f SmartEnemy::getHafeSmartDir() const

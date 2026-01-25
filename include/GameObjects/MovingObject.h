@@ -8,12 +8,12 @@ class MovingObject : public Object {
 public:
   MovingObject(const sf::Vector2f& position, ObjectSymbol symbol, bool isActive=true);
 
-  virtual void update(float deltaTime) override = 0;
+  virtual void update(float deltaTime,const LevelData* levelData) override = 0;
 
   virtual void handleCollision(Object& obj) override  = 0;
   void setBoradPtr(Board& board);
 
-  void reset() override;
+  virtual void reset() override;
 protected:
   virtual void handleCollision(Player& obj) override = 0;
   virtual void handleCollision(Enemy& obj) override = 0;
