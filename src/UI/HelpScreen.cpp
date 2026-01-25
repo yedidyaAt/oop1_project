@@ -15,7 +15,6 @@ HelpScreen::HelpScreen(WindowManager& window):
 
 void HelpScreen::run()
 {
-
   ButtonType curStatus = ButtonType::NONE;
 
   while (m_window.isOpen())

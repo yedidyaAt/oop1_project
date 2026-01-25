@@ -50,7 +50,7 @@ ObjectSymbol Object::getSymbol() const
 
 sf::FloatRect Object::getBoundRec() const
 {
-  return sf::FloatRect{getPos(),{UiConfig::TILE_SIZE,UiConfig::TILE_SIZE} };
+  return m_sprite.getGlobalBounds();
 }
 
 bool Object::isActive() const

@@ -1,6 +1,5 @@
 #include "LevelManager.h"
 #include "Resources.h"
-#include "SoundManager.h"
 #include "WindowManager.h"
 
 #include <iostream>
@@ -10,6 +9,7 @@ LevelManager::LevelManager(WindowManager& window):m_window(window)
 
 void LevelManager::run()
 {
+
   setLevelData();
 
   for (int i = 0;i < m_fm.getTotalLevels(); i++)

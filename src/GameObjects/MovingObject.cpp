@@ -125,14 +125,45 @@ void MovingObject::setLastDir(const sf::Vector2f& dir)
   m_lastDir = dir;
 }
 
-bool MovingObject::isOnObject(const Object& obj)const
-{
-  const auto& overlap = getBoundRec().findIntersection(obj.getBoundRec());
-  
-  float isOverlapMount = UiConfig::TILE_SIZE * 0.4f;
+//bool MovingObject::isOnObject(const Object& obj)const
+//{
+//  const auto& overlap = getBoundRec().findIntersection(obj.getBoundRec());
+//  
+//  float isOverlapMount = UiConfig::TILE_SIZE * 0.0f;
+//
+// if(overlap.has_value())
+//  if (overlap->size.x >= isOverlapMount)
+//    return true;
+//
+//  return false;
+//}
 
-  if (overlap->size.x >= isOverlapMount)
+bool MovingObject::isOnObject(const Object& obj) const
+{
+  // 1. שליפת המלבנים
+  sf::FloatRect myRect = getBoundRec();
+  sf::FloatRect objRect = obj.getBoundRec();
+
+  // 2. חישוב המרכזים (ב-SFML 3 יש פונקציה מובנית שעושה את זה)
+  float myCenterX = myRect.getCenter().x;
+  float objCenterX = objRect.getCenter().x;
+
+  // 3. חישוב המרחק האבסולוטי בין המרכזים
+  float distanceX = std::abs(myCenterX - objCenterX);
+
+  // 4. חישוב סכום חצאי הרוחב (שים לב: width הפך ל-size.x)
+  float combinedHalfWidths = (myRect.size.x / 2.0f) + (objRect.size.x / 2.0f);
+
+  // 5. חישוב החפיפה בפועל
+  float overlapX = combinedHalfWidths - distanceX;
+
+  // 6. התנאי: לפחות 40% חפיפה
+  float minOverlapRequired = UiConfig::TILE_SIZE * 0.40f;
+
+  if (overlapX >= minOverlapRequired)
+  {
     return true;
+  }
 
   return false;
 }
@@ -170,7 +201,7 @@ bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryC
   // טווח כניסה רחב (20% מגודל תא)
   float entryThreshold = UiConfig::TILE_SIZE * PhysicsConfig::LADDER_SNAP_THRESHOLD;
   // טווח "הידבקות" צר (כדי להשאיר את השחקן תפוס אם הוא כבר שם)
-  float stickThreshold = 2.0f;
+  float stickThreshold = 20.0f;
 
   // --- לוגיקה 1: תחזוקה (Stickiness) ---
   // אם אנחנו כבר ממש קרובים למרכז, נשארים שם (מתעלמים מתנאי הכניסה)

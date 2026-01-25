@@ -21,6 +21,7 @@ Level::Level():m_levelData(nullptr)
 
 GameStatus Level::run(WindowManager& window)
 {
+  SoundManager::instance().playMusic("musics/bgMusic_game.mp3", 5, true);
   m_gameRun = true;
   m_clock.reset();
   window.updateGameView(*this);
@@ -55,6 +56,7 @@ GameStatus Level::run(WindowManager& window)
     }
   }
 
+  SoundManager::instance().stopMusic();
   return m_gameStatus;
 }
 
@@ -221,8 +223,10 @@ void Level::drawStaticObj(sf::RenderWindow& window)
 {
   for (const auto& line : m_staticObj)
     for (const auto& obj : line)
+    {
       if (obj)
         obj->draw(window);
+    }
 }
 
 void Level::updateLevelData(float dt)

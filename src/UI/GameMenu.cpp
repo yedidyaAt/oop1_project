@@ -3,6 +3,7 @@
 #include "Resources.h"
 #include "UiConfig.h"
 #include "WindowConfig.h"
+#include "SoundManager.h"
 
 #include <iostream>
 
@@ -15,6 +16,8 @@ GameMenu::GameMenu(WindowManager& window)  :
 
 ButtonType GameMenu::run()
 {
+  SoundManager::instance().playMusic("musics/bgMusic_menu.mp3",15,true);
+
   m_window.updateDefaultView();
   updateLayout(m_window.getDefaultView().getSize());
 
@@ -28,7 +31,15 @@ ButtonType GameMenu::run()
       curStatus =   event->visit([this](const auto& event) { return handle(event); });
     
       if (curStatus != ButtonType::NONE)
+      {
+        if (curStatus == ButtonType::START)
+        {
+          SoundManager::instance().stopMusic();
+        }
+
         return curStatus;
+      }
+      
     }
 
     
@@ -40,6 +51,7 @@ ButtonType GameMenu::run()
 
   }
 
+  SoundManager::instance().stopMusic();
   return curStatus; // avoid warning
 }
 

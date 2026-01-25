@@ -41,3 +41,27 @@ void SoundManager::playSound(SoundType type)
   }
 }
 
+void SoundManager::playMusic(const std::string& fileName,int volume, bool loop)
+{
+  if (m_bgMusic.getStatus() == sf::Music::Status::Playing && m_curMusicName == fileName)
+  {
+    return;
+  }
+  else
+    stopMusic();
+
+  if (!m_bgMusic.openFromFile(fileName))
+    return;
+  
+  m_curMusicName = fileName;
+  m_bgMusic.setLooping(loop);
+  m_bgMusic.setVolume(volume);
+  m_bgMusic.play(); 
+}
+
+void SoundManager::stopMusic()
+{
+  m_curMusicName = "";
+  m_bgMusic.stop();
+}
+

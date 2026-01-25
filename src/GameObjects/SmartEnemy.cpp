@@ -65,8 +65,8 @@ void SmartEnemy::handleCollision(Rope& obj)
 
 sf::Vector2f SmartEnemy::getDirection()
 {
-  return getSmartNextDir(getPos(),m_board->getPlayerPosition());
-  //return getHafeSmartDir();
+  //return getSmartNextDir(getPos(),m_board->getPlayerPosition());
+  return getHafeSmartDir();
 }
 
 sf::Vector2f SmartEnemy::getHafeSmartDir() const
@@ -117,7 +117,7 @@ sf::Vector2f SmartEnemy::getSmartNextDir(const sf::Vector2f& start, const sf::Ve
     return { 0,0 };
 
   // set World // G = Grid
-  const sf::Vector2i startG = m_board->worldToGrid(start);
+  const sf::Vector2i startG = m_board->worldToGrid(getBoundRec().getCenter());
   const sf::Vector2i targetG = m_board->worldToGrid(target);
   const sf::Vector2u boardSize = m_board->getSizeBoard();
 
@@ -165,59 +165,78 @@ sf::Vector2f SmartEnemy::getSmartNextDir(const sf::Vector2f& start, const sf::Ve
 
     bool hasSolidGround = (belowObj == ObjectSymbol::WALL ||
       belowObj == ObjectSymbol::GROUND ||
-      belowObj == ObjectSymbol::LADDER || // עומד על ראש סולם
-      belowObj == ObjectSymbol::PLAYER || // בד"כ אפשר לעמוד על שחקנים
-      belowObj == ObjectSymbol::ENEMY);
+      belowObj == ObjectSymbol::LADDER );
 
     // ==========================================
 
+   // לולאת השכנים
     for (int i = 0; i < sizeMove; i++)
     {
-      sf::Vector2i direction = mapAction(move[i]); // וקטור הכיוון (למשל 1,0)
-      sf::Vector2i curSon = parent + direction;    // המיקום החדש
-      // --- סינונים בסיסיים ---
+      sf::Vector2i direction = mapAction(move[i]);
+      sf::Vector2i neighbor = parent + direction;      // השכן
+      sf::Vector2i belowNeighbor = neighbor + sf::Vector2i(0, 1); // מה שמתחת לשכן
 
-                  // 1. האם יצאנו מהגבולות?
-      if (!m_board->isValidIndex(curSon)) continue;
+      // 1. בדיקת גבולות וביקור
+      if (!m_board->isValidIndex(neighbor)) 
+        continue;
+      if (visit[neighbor.y][neighbor.x])
+        continue;
 
-      // 2. האם המיקום החדש הוא קיר שאסור להיכנס אליו?
-      ObjectSymbol targetSymbol = m_board->getSymbolAt(curSon);
-      if (targetSymbol == ObjectSymbol::WALL) continue;
+      ObjectSymbol targetObj = m_board->getSymbolAt(neighbor);
 
-      // 3. האם כבר היינו שם?
-      if (visit[curSon.y][curSon.x]) continue;
+      // קיר חוסם כניסה
+      if (targetObj == ObjectSymbol::WALL) 
+        continue;
 
-
-      // --- סינוני פיזיקה (החלק החדש) ---
-
-      // חוק א': עלייה למעלה
-      // מותרת רק אם אנחנו כרגע על סולם
-      if (direction.y == -1)
+      if (currObj == ObjectSymbol::ROPE)
       {
-        if (!isClimbable) continue;
+        // אם מנסים לזוז בציר ה-Y (למעלה או למטה)
+        if (direction.y != 0)
+          continue; // דלג, תנועה לא חוקית
+      }
+      // --- הבדיקה שביקשת ---
+
+      // האם זה אובייקט פיזי? (סולם או חבל)
+      bool isPhysical = (targetObj == ObjectSymbol::LADDER || targetObj == ObjectSymbol::ROPE);
+
+      // האם זה אוויר שיש מתחתיו רצפה?
+      bool isSupportedAir = false;
+      if (!isPhysical) // אם זה לא פיזי, זה כנראה אוויר/מטבע
+      {
+        if (m_board->isValidIndex(belowNeighbor))
+        {
+          ObjectSymbol floorObj = m_board->getSymbolAt(belowNeighbor);
+          // רצפה נחשבת: קיר, או ראש של סולם
+          if (floorObj == ObjectSymbol::WALL ||
+              floorObj == ObjectSymbol::LADDER ||
+              floorObj == ObjectSymbol::GROUND)
+          {
+            isSupportedAir = true;
+          }
+        }
       }
 
-      // חוק ב': תנועה לצדדים
-      // מותרת רק אם יש קרקע מתחת לרגליים, או אם מחזיקים במשהו (סולם/חבל)
-      if (direction.x != 0)
+      // התנאי הקובע: נכנסים רק אם זה פיזי או אוויר נתמך
+      if (isPhysical || isSupportedAir)
       {
-        if (!hasSolidGround && !isHanging) continue;
-      }
+        // (חובה) הגבלה קטנה לעלייה למעלה: אי אפשר לעלות לאוויר סתם ככה, חייבים להיות על סולם כרגע
+        if (direction.y == -1 && !isClimbable) 
+          continue;
 
-      // חוק ג': ירידה למטה תמיד מותרת (אין כאן continue)
-        queue.push(curSon);
-        visit[curSon.y][curSon.x] = true;
+        queue.push(neighbor);
+        visit[neighbor.y][neighbor.x] = true;
+        parents[neighbor.y][neighbor.x] = parent;
         visitedCount++;
-        parents[curSon.y][curSon.x] = parent;
       }
     }
+  }
   
 
   // ==========================================
 //           DEBUG VISUALIZATION
 // ==========================================
 // שנה ל-false כשאתה מסיים לדבג כדי לא להאט את המשחק
-  bool debugMode = true;
+  bool debugMode = false;
 
   if (debugMode)
   {
@@ -259,26 +278,57 @@ sf::Vector2f SmartEnemy::getSmartNextDir(const sf::Vector2f& start, const sf::Ve
 
   while (parents[stepToo.y][stepToo.x] != startG)
     stepToo = parents[stepToo.y][stepToo.x];
-    
-  // set dir by my pos
-  auto desiredDir = stepToo - startG;
 
-  if (desiredDir.y) //BFS decide to move up or down becouse we on ladder by grid pos we confirm this
+  // ============================================================
+      // הלוגיקה שלך: בדיקת יישור לפי stepToo
+      // ============================================================
+
+      // לאן ה-BFS רוצה ללכת?
+  sf::Vector2i gridDir = stepToo - startG;
+  sf::Vector2f desiredDir = static_cast<sf::Vector2f>(gridDir);
+
+  // המיקום הנוכחי שלי בפיקסלים
+  sf::Vector2f myCenter = getBoundRec().getCenter();
+
+  // --- מקרה 1: ה-BFS רוצה תנועה אנכית (סולם) ---
+  if (gridDir.y != 0)
   {
-    if(!isOnObject(m_board->getObjAt(stepToo))) // stepToo have to be ladder and we check if is on by som calculat
+    // חישוב מרכז העמודה של המשבצת *אליה* אנחנו הולכים (stepToo)
+    float destCenterX = (stepToo.x * UiConfig::TILE_SIZE) + (UiConfig::TILE_SIZE / 2.f);
+
+    // "מרחב סלחנות" - אם אנחנו בסטייה של יותר מ-5 פיקסלים
+    if (std::abs(destCenterX - myCenter.x) > 5.0f)
     {
-      const auto ladderCenterX = (startG.x * UiConfig::TILE_SIZE) + (UiConfig::TILE_SIZE / 2); // startG becouse the bfs recognize me on leadeer 
-
-      const auto myCenter = getBoundRec().getCenter().x;
-
-      if (ladderCenterX > myCenter)
-        desiredDir = mapAction(Action::MOVE_RIGHT);
+      // אנחנו לא מיושרים -> דורסים את הפקודה האנכית ומחליפים באופקית
+      if (destCenterX > myCenter.x)
+        return static_cast<sf::Vector2f>(mapAction(Action::MOVE_RIGHT));
       else
-        desiredDir = mapAction(Action::MOVE_LEFT);
+        return static_cast<sf::Vector2f>(mapAction(Action::MOVE_LEFT));
+    }
+
+    // אם הגענו לפה, אנחנו מיושרים (בטווח ה-5 פיקסלים).
+    // מחזירים את desiredDir המקורי (למעלה/למטה).
+  }
+
+  // --- מקרה 2: ה-BFS רוצה תנועה אופקית (ימינה/שמאלה) ---
+  // הוספתי את זה כדי להשלים את הלוגיקה שלך גם למצב של כניסה למנהרה
+  else if (gridDir.x != 0)
+  {
+    // חישוב מרכז השורה של המשבצת *אליה* אנחנו הולכים
+    float destCenterY = (stepToo.y * UiConfig::TILE_SIZE) + (UiConfig::TILE_SIZE / 2.f);
+
+    // בדיקת גובה - אם אנחנו לא בגובה הנכון להיכנס למנהרה
+    if (std::abs(destCenterY - myCenter.y) > 5.0f)
+    {
+      // דורסים את הפקודה האופקית ומחליפים באנכית
+      if (destCenterY > myCenter.y)
+        return static_cast<sf::Vector2f>(mapAction(Action::MOVE_DOWN));
+      else
+        return static_cast<sf::Vector2f>(mapAction(Action::MOVE_UP));
     }
   }
 
-  return static_cast<sf::Vector2f>(desiredDir);
+  return desiredDir;
 }
 
 

@@ -17,12 +17,12 @@ static bool registered = Factory::instance().registerType(
 
     if (num == 0)
     {
-      std::cout << "dumb was create\n";
+      //std::cout << "Dumb was create\n";
       return std::make_unique<DumbEnemy>(pos);
     }
     else if(num == 1)
     {
-      std::cout << "Smart was create\n";
+      //std::cout << "Smart was create\n";
       return std::make_unique<SmartEnemy>(pos);
     }
   }
