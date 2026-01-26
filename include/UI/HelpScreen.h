@@ -7,7 +7,7 @@
 class HelpScreen
 {
 public:
-  HelpScreen(WindowManager& window);
+  explicit HelpScreen(WindowManager& window);
 
   void run();
 

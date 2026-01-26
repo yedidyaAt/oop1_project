@@ -35,8 +35,9 @@ sf::Vector2f Board::gridToWorld(const sf::Vector2i& pos) const
 
 bool Board::isValidIndex(const sf::Vector2i& index) const
 {
-  return (index.y >= 0 && index.x < m_levelData->m_LevelSize.x &&
-         index.x >= 0 && index.y < m_levelData->m_LevelSize.y);
+  return (index.x >= 0 && index.y >= 0 &&
+    static_cast<unsigned int>(index.x) < m_levelData->m_LevelSize.x &&
+    static_cast<unsigned int>(index.y) < m_levelData->m_LevelSize.y);
 }
 
 

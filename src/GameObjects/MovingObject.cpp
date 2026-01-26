@@ -300,6 +300,11 @@ void MovingObject::checkSmashed()
   }
 }
 
+Board* MovingObject::getBoard() const
+{
+    return m_board;
+}
+
 void MovingObject::setBoradPtr(Board& board)
 {
   m_board = &board;

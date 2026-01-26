@@ -5,7 +5,7 @@
 class Coin: public StaticObject
 {
 public:
-  Coin(const sf::Vector2f& position,int value = 0,bool isActive = true);
+  explicit Coin(const sf::Vector2f& position,int value = 0,bool isActive = true);
 
   void handleCollision(Object& obj)  override;
   void handleCollision(Player& obj)  override;

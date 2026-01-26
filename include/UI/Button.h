@@ -6,9 +6,9 @@
 class Button
 {
 public:
-  Button(const sf::Font& font, ButtonType type = ButtonType::NONE);
+  explicit Button(const sf::Font& font, ButtonType type = ButtonType::NONE);
 
-  void draw(WindowManager& window);
+  void draw(WindowManager& window)const;
 
   void handlHover(const sf::Vector2f& hoverPos);
   ButtonType handlClick(const sf::Vector2f& clickPos);

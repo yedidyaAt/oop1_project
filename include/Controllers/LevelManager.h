@@ -9,7 +9,7 @@
 class LevelManager
 {
 public:
-  LevelManager(WindowManager& window);
+  explicit LevelManager(WindowManager& window);
 
   void run();
 

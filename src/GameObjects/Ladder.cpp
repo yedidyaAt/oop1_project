@@ -11,49 +11,42 @@
 #include "Factory.h"
 #include "LevelData.h"
 
-static bool registered = Factory::instance().registerType(ObjectSymbol::LADDER,
-  [](const sf::Vector2f& pos, const LevelData& data)
+static const bool registered = Factory::instance().registerType(ObjectSymbol::LADDER,
+  [](const sf::Vector2f& pos, const LevelData& /*data*/)
   {
-    (void)data; // avoid warrnig
     return std::make_unique<Ladder>(pos);
   }
 );
 
 
 Ladder::Ladder(const sf::Vector2f& position, bool isActive)
-  :StaticObject(position,ObjectSymbol::LADDER,isActive)
+  :StaticObject(position, ObjectSymbol::LADDER, isActive)
 {
 }
 
-void Ladder::handleCollision(Object& obj) 
+void Ladder::handleCollision(Object& /*obj*/)
 {
-//igonr
 }
-void Ladder::handleCollision(Player & obj) 
-{
-  obj.handleCollision(*this);
-}
-void Ladder::handleCollision(Enemy & obj) 
+void Ladder::handleCollision(Player& obj)
 {
   obj.handleCollision(*this);
 }
-void Ladder::handleCollision(Coin & obj) 
+void Ladder::handleCollision(Enemy& obj)
 {
-
+  obj.handleCollision(*this);
 }
-void Ladder::handleCollision(Wall & obj)
+void Ladder::handleCollision(Coin& /*obj*/)
 {
-//ignor
 }
-void Ladder::handleCollision(Ground & obj) 
+void Ladder::handleCollision(Wall& /*obj*/)
 {
-//ignor
 }
-void Ladder::handleCollision(Ladder & obj) 
+void Ladder::handleCollision(Ground& /*obj*/)
 {
-//ignor
 }
-void Ladder::handleCollision(Rope & obj) 
-{  
-  //ignor
+void Ladder::handleCollision(Ladder& /*obj*/)
+{
+}
+void Ladder::handleCollision(Rope& /*obj*/)
+{
 }

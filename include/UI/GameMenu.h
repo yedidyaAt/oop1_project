@@ -8,7 +8,7 @@
 class GameMenu
 {
 public:
-  GameMenu(WindowManager& window);
+  explicit GameMenu(WindowManager& window);
 
   ButtonType run();
 

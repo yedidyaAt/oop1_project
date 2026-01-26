@@ -9,7 +9,7 @@ Button::Button(const sf::Font& font, ButtonType type) :m_text(font)
 	m_background.setFillColor(sf::Color::Transparent);
 }
 
-void Button::draw(WindowManager& window)
+void Button::draw(WindowManager& window)const
 {
 	window.draw(m_background);
 	window.draw(m_text);

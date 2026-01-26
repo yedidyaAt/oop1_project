@@ -49,7 +49,7 @@ private:
   const std::vector<std::vector<std::unique_ptr<StaticObject>>>& getStaticObj()const;
   const std::vector<std::unique_ptr<MovingObject>>& getMovableObj()const;
 
-  bool createEntity(char tile, const sf::Vector2f& pos, const sf::Vector2f& index);
+  bool createEntity(char tile, const sf::Vector2f& pos, const sf::Vector2u& index);
   void setObjects(const std::vector<std::string>& board);
   void setBoardMoveable();
   void setCoinsLeft();

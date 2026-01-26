@@ -5,7 +5,7 @@
 class Enemy :public MovingObject
 {
 public:
-  Enemy(const sf::Vector2f& position, bool isActive = true);
+  explicit Enemy(const sf::Vector2f& position, bool isActive = true);
 
      virtual void update(float deltaTime, const LevelData* levelData) override = 0;
 

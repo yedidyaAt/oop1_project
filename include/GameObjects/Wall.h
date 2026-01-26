@@ -7,7 +7,7 @@
 class Wall : public StaticObject
 {
 public:
-  Wall(const sf::Vector2f& position, bool isActive = true);
+  explicit Wall(const sf::Vector2f& position, bool isActive = true);
 
   void handleCollision(Object& obj)  override;
   void handleCollision(Player& obj)  override;

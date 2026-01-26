@@ -16,9 +16,10 @@
 
 #include <iostream> // בשביל הדיבאג
 
-Level::Level():m_levelData(nullptr)
-{
-}
+Level::Level():
+  m_levelData(nullptr),
+  m_gameStatus(GameStatus::PLAYING)
+{}
 
 GameStatus Level::run(WindowManager& window)
 {
@@ -84,7 +85,7 @@ void Level::drawBoard(WindowManager& window)
   m_player->draw(window);
 }
 
-bool Level::createEntity(char tile,const sf::Vector2f& pos, const sf::Vector2f& index)
+bool Level::createEntity(char tile,const sf::Vector2f& pos, const sf::Vector2u& index)
 {
   ObjectSymbol symbol = static_cast<ObjectSymbol>(tile);
 
@@ -119,9 +120,9 @@ void Level::setObjects(const std::vector<std::string>& board)
 
   resizeMap();
 
-  for (int row = 0; row < board.size(); ++row)
+  for (unsigned int row = 0; row < board.size(); ++row)
   {
-    for (int col = 0; col < board[row].size(); ++col)
+    for (unsigned int col = 0; col < board[row].size(); ++col)
     {
       const char& tile = board[row][col];
       sf::Vector2f pos(
@@ -129,7 +130,7 @@ void Level::setObjects(const std::vector<std::string>& board)
         static_cast<float>(row) * UiConfig::TILE_SIZE
       );
 
-      createEntity(tile, pos,sf::Vector2f{(float)col,(float)row});
+      createEntity(tile, pos,sf::Vector2u{col,row});
     }
   }
 }
@@ -391,21 +392,20 @@ const  std::vector<std::vector<std::unique_ptr<StaticObject>>>& Level::getStatic
 
 float Level::getCols() const
 {
-  return getSizeLevel().x;
+  return static_cast<float>(getSizeLevel().x);
 }
 
 float Level::getRows() const
 {
-  return getSizeLevel().y;
+  return static_cast<float>(getSizeLevel().y);
 }
 
 sf::Vector2u Level::getSizeLevel() const
 {
-  if(m_levelData)
-  return m_levelData->m_LevelSize;
-  else
+  if (m_levelData)
   {
-    std::cerr << "you dumb ass." << std::endl;
-    return sf::Vector2u();
+    return m_levelData->m_LevelSize;
   }
+
+  return {0,0};
 }

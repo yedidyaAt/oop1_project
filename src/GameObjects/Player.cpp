@@ -16,7 +16,7 @@
 #include "SoundType.h"
 #include "UiConfig.h"
 
-static bool registered = Factory::instance().registerType(ObjectSymbol::PLAYER,
+static const bool registered = Factory::instance().registerType(ObjectSymbol::PLAYER,
   [](const sf::Vector2f& pos, const LevelData& data) 
   {
     PlayerPackage package;
@@ -60,12 +60,11 @@ void Player::handleCollision(Object& obj)
   obj.handleCollision(*this);
 }
 
-void Player::handleCollision(Player& obj)
+void Player::handleCollision(Player& /*obj*/)
 {
-  //obj.handlCollison(*this);
 }
 
-void Player::handleCollision(Enemy& obj)
+void Player::handleCollision(Enemy& /*obj*/)
 {
   playerKilled();
 }
@@ -158,8 +157,8 @@ void Player::digGround()
 {
   const sf::Vector2f digPos = getDigPos();
 
-  if (m_board)
-    m_board->tryToDig(digPos);
+  if (getBoard())
+    getBoard()->tryToDig(digPos);
 }
 
 void Player::handlFallingOutside()

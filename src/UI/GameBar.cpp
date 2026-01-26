@@ -58,7 +58,7 @@ void GameBar::alignTextToSlot(sf::Text& text, int slotIndex, int totalSlots, con
   //const float slotHight = barSize.y / totalSlots;
 
   //setSize char
-  const  unsigned int charSize = barSize.y * 0.5f; // 50% from the high
+  const unsigned int charSize = static_cast<unsigned int>(barSize.y * 0.5f); // 50% from the high
   text.setCharacterSize(charSize);
 
   //center of text

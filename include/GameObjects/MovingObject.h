@@ -61,7 +61,7 @@ protected:
   void checkFalling(float fallSpeed);
   void checkSmashed();
 
-  Board* m_board = nullptr;
+  Board* getBoard() const;
 private:
   sf::Vector2f m_lastDir;
   sf::Vector2f m_velocity = { 0,0 };
@@ -70,4 +70,5 @@ private:
   bool m_onGround = false;
   bool m_faling = false;
   bool m_smashed = false;
+  Board* m_board = nullptr;
 };

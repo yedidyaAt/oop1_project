@@ -7,7 +7,7 @@
 
 GameController::GameController():m_window(), m_menu(m_window), m_levels(m_window)
 {
-  std::srand(std::time(nullptr));
+  std::srand(static_cast<unsigned int>(std::time(nullptr)));
   Resources::instance().loadResources();
   Factory::instance();
   SoundManager::instance();

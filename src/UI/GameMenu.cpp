@@ -9,14 +9,17 @@
 
 GameMenu::GameMenu(WindowManager& window)  :
   m_window(window),
-  m_buttons(UiConfig::BUTTON_CNT,Resources::instance().getFont(FontType::Damned))
+  m_buttons(
+            UiConfig::BUTTON_CNT,
+            Button(Resources::instance().getFont(FontType::Damned))
+            )
 {
   initButtons();
 }
 
 ButtonType GameMenu::run()
 {
-  SoundManager::instance().playMusic("musics/bgMusic_menu.mp3",15,true);
+  SoundManager::instance().playMusic("musics/bgMusic_menu.mp3",25,true);
 
   m_window.updateDefaultView();
   updateLayout(m_window.getDefaultView().getSize());

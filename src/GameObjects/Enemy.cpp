@@ -9,9 +9,9 @@
 
 #include <iostream>
 
-static bool registered = Factory::instance().registerType(
+static const bool registered = Factory::instance().registerType(
   ObjectSymbol::ENEMY,
-  [](const sf::Vector2f& pos, const LevelData& data) -> std::unique_ptr<Object>
+  [](const sf::Vector2f& pos, const LevelData& /*data*/) -> std::unique_ptr<Object>
   {
     auto num = std::rand()%2;
 
@@ -25,6 +25,8 @@ static bool registered = Factory::instance().registerType(
       //std::cout << "Smart was create\n";
       return std::make_unique<SmartEnemy>(pos);
     }
+
+    return nullptr; // avoid warnings
   }
 );
 

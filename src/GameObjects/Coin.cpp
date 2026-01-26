@@ -14,53 +14,46 @@
 #include "SoundType.h"
 #include <iostream>
 
-static bool registered = Factory::instance().registerType(ObjectSymbol::COIN,
+static const bool registered = Factory::instance().registerType(ObjectSymbol::COIN,
   [](const sf::Vector2f& pos, const LevelData& data)
   {
     int val = data.m_curLevel * GameRules::COIN_SCORE_VALUE;
-    return std::make_unique<Coin>(pos,val);
+    return std::make_unique<Coin>(pos, val);
   }
 );
 
-Coin::Coin(const sf::Vector2f& position,int value,bool isActive)
-  :StaticObject(position,ObjectSymbol::COIN,isActive)
+Coin::Coin(const sf::Vector2f& position, int value, bool isActive)
+  :StaticObject(position, ObjectSymbol::COIN, isActive)
 {
   m_value = value;
 }
 
-void Coin::handleCollision(Object& obj) 
+void Coin::handleCollision(Object& /*obj*/)
 {
-//igonr
 }
-void Coin::handleCollision(Player & obj) 
+void Coin::handleCollision(Player& obj)
 {
   destroy();
   SoundManager::instance().playSound(SoundType::COLLECT_COIN);
   obj.handleCollision(*this);
 }
-void Coin::handleCollision(Enemy & obj) 
+void Coin::handleCollision(Enemy& /*obj*/)
 {
-
 }
-void Coin::handleCollision(Coin & obj) 
+void Coin::handleCollision(Coin& /*obj*/)
 {
-
 }
-void Coin::handleCollision(Wall & obj)
+void Coin::handleCollision(Wall& /*obj*/)
 {
-//ignor
 }
-void Coin::handleCollision(Ground & obj) 
+void Coin::handleCollision(Ground& /*obj*/)
 {
-//ignor
 }
-void Coin::handleCollision(Ladder & obj) 
+void Coin::handleCollision(Ladder& /*obj*/)
 {
-//ignor
 }
-void Coin::handleCollision(Rope & obj) 
+void Coin::handleCollision(Rope& /*obj*/)
 {
-  //ignor
 }
 
 int Coin::getValue() const

@@ -1,4 +1,5 @@
 #include "Resources.h"
+#include <cassert>
 
 #include <iostream>
 
@@ -40,34 +41,39 @@ void Resources::loadResources()
 
 const sf::Texture& Resources::getObjectTexture(ObjectSymbol symbol) const
 {
+  using enum ObjectSymbol; // מייבא את הסמלים כדי לחסוך כתיבה מיותרת
+
   switch (symbol)
   {
-  case ObjectSymbol::PLAYER: return m_playerTexture;
-  case ObjectSymbol::ENEMY:  return m_enemyTexture;
-  case ObjectSymbol::WALL:   return m_wallTexture;
-  case ObjectSymbol::COIN:   return m_coinTexture;
-  case ObjectSymbol::GROUND: return m_groundTexture;
-  case ObjectSymbol::LADDER: return m_ladderTexture;
-  case ObjectSymbol::ROPE:   return m_ropeTexture;
-    
-  default:                   return m_emptyTexture;
+  case PLAYER: return m_playerTexture;
+  case ENEMY:  return m_enemyTexture;
+  case WALL:   return m_wallTexture;
+  case COIN:   return m_coinTexture;
+  case GROUND: return m_groundTexture;
+  case LADDER: return m_ladderTexture;
+  case ROPE:   return m_ropeTexture;
+  case NONE:   return m_emptyTexture;
+
+  default:
+    assert(false && "Unknown ObjectSymbol requested!");
+    return m_emptyTexture;
   }
 }
 
 
-const sf::SoundBuffer& Resources::getSoundBuffer(SoundType type) const
-{
-  switch (type)
-  {
-  case SoundType::COLLECT_COIN:     return m_coinBuffer;
-  case SoundType::LIFE_LOST:        return m_lifeLostBuffer;
-  case SoundType::FALL:             return m_fallBuffer;
-  case SoundType::SMASHED:          return m_smashedBuffer;
-  case SoundType::COUNTDOWN:        return m_countdownBuffer;
-  case SoundType::LEVEL_COMPLETE:   return m_levelCompleteBuffer;
-  case SoundType::GAME_OVER_VOICE:  return m_gameOverVoiceBuffer;
-  case SoundType::GTA_MENU:         return m_gtaMenuBuffer;
-  default:                          return m_coinBuffer; // סתם Safe Fallback
+const sf::SoundBuffer& Resources::getSoundBuffer(SoundType type) const {
+  using enum SoundType;  // avoid rewrite
+
+  switch (type) {
+  case COLLECT_COIN:     return m_coinBuffer;
+  case LIFE_LOST:        return m_lifeLostBuffer;
+  case FALL:             return m_fallBuffer;
+  case SMASHED:          return m_smashedBuffer;
+  case COUNTDOWN:        return m_countdownBuffer;
+  case LEVEL_COMPLETE:   return m_levelCompleteBuffer;
+  case GAME_OVER_VOICE:  return m_gameOverVoiceBuffer;
+  case GTA_MENU:         return m_gtaMenuBuffer;
+  default:               return m_coinBuffer;
   }
 }
 
@@ -76,7 +82,12 @@ const sf::Font& Resources::getFont(FontType type) const
   switch (type)
   {
   case FontType::Damned: return m_damned;
-  default:               return m_damned;
+
+  default:               
+    assert(false && "Warning: Attempted to use a font type that isn't implemented yet!");
+    return m_damned;
   }
 }
+
+
 

@@ -5,7 +5,7 @@
 class Ground : public StaticObject
 {
 public:
-  Ground(const sf::Vector2f& position, bool isActive = true);
+  explicit Ground(const sf::Vector2f& position, bool isActive = true);
 
   void handleCollision(Object& obj)  override;
   void handleCollision(Player& obj)  override;

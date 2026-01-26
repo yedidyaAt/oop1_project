@@ -12,8 +12,8 @@
 #include "LevelData.h"
 
 
-static bool registered = Factory::instance().registerType(ObjectSymbol::GROUND,
-  [](const sf::Vector2f& pos, const LevelData& data)
+static const bool registered = Factory::instance().registerType(ObjectSymbol::GROUND,
+  [](const sf::Vector2f& pos, const LevelData& /*data*/)
   {
     return std::make_unique<Ground>(pos);
   }
@@ -21,38 +21,33 @@ static bool registered = Factory::instance().registerType(ObjectSymbol::GROUND,
 
 
 Ground::Ground(const sf::Vector2f& position, bool isActive)
-  :StaticObject(position, ObjectSymbol::GROUND,isActive)
+  :StaticObject(position, ObjectSymbol::GROUND, isActive)
 {
 }
 
-void Ground::handleCollision(Object& obj) 
+void Ground::handleCollision(Object& /*obj*/)
 {
-//igonr
 }
-void Ground::handleCollision(Player & obj) 
+void Ground::handleCollision(Player& obj)
 {
   obj.handleCollision(*this);
 }
-void Ground::handleCollision(Enemy & obj) 
+void Ground::handleCollision(Enemy& obj)
 {
   obj.handleCollision(*this);
 }
-void Ground::handleCollision(Coin & obj) 
-{
-
-}
-void Ground::handleCollision(Wall & obj)
-{
-//ignor
-}
-void Ground::handleCollision(Ground & obj) 
+void Ground::handleCollision(Coin& /*obj*/)
 {
 }
-void Ground::handleCollision(Ladder & obj) 
+void Ground::handleCollision(Wall& /*obj*/)
 {
-//ignor
 }
-void Ground::handleCollision(Rope & obj) 
+void Ground::handleCollision(Ground& /*obj*/)
 {
-  //ignor
+}
+void Ground::handleCollision(Ladder& /*obj*/)
+{
+}
+void Ground::handleCollision(Rope& /*obj*/)
+{
 }

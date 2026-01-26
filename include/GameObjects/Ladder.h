@@ -6,7 +6,7 @@
 class Ladder: public StaticObject
 {
 public:
-  Ladder(const sf::Vector2f& position, bool isActive = true);
+  explicit Ladder(const sf::Vector2f& position, bool isActive = true);
 
   void handleCollision(Object& obj)  override;
   void handleCollision(Player& obj)  override;

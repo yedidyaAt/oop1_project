@@ -8,7 +8,7 @@
 
 class FileManager {
 public:
-  FileManager(const std::string& fileName = WindowConfig::DEFAULT_FILE_NAME);
+  explicit FileManager(const std::string& fileName = WindowConfig::DEFAULT_FILE_NAME);
 
   std::vector<std::string> getLevel(int levelIndex) const;
 

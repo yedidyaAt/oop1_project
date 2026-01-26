@@ -6,7 +6,7 @@
 class Rope: public StaticObject
 {
 public:
-  Rope(const sf::Vector2f& position,bool isActive = true);
+  explicit Rope(const sf::Vector2f& position,bool isActive = true);
 
   void handleCollision(Object& obj)  override;
   void handleCollision(Player& obj)  override;

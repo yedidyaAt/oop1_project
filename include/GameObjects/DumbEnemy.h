@@ -5,7 +5,7 @@
 class DumbEnemy: public Enemy
 {
 public:
-	DumbEnemy(const sf::Vector2f& position, bool isActive = true);
+	explicit DumbEnemy(const sf::Vector2f& position, bool isActive = true);
 	
 	void update(float deltaTime, const LevelData* levelData) override;
 
