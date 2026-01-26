@@ -63,7 +63,7 @@ void DumbEnemy::handleCollision(Rope& obj)
   handleRopeLogic(obj);
 }
 
-sf::Vector2f DumbEnemy::getDirection()
+sf::Vector2f DumbEnemy::getDirection() 
 {
   if (m_changeDirTimer <= 0)
   {

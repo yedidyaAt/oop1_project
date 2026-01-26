@@ -18,7 +18,7 @@ public:
   void handleCollision(Ladder& obj)  override;
   void handleCollision(Rope& obj)    override;
 
-  sf::Vector2f getDirection()override ;
+  sf::Vector2f getDirection() override ;
 
 private:
   void updateDirTime(float deltaTime);

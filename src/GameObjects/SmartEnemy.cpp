@@ -63,7 +63,7 @@ void SmartEnemy::handleCollision(Rope& obj)
   handleRopeLogic(obj);
 }
 
-sf::Vector2f SmartEnemy::getDirection()
+sf::Vector2f SmartEnemy::getDirection() 
 {
   return getSmartNextDir(getPos(), getBoard()->getPlayerPosition());
 }
@@ -270,7 +270,10 @@ sf::Vector2f SmartEnemy::getSmartNextDir(const sf::Vector2f& start, const sf::Ve
 
     if (std::abs(destCenterY - myCenter.y) > 5.0f)
     {
-      if (destCenterY > myCenter.y)
+      ObjectSymbol mySymbol = getBoard()->getSymbolAt(startG);
+      bool canClimb = (mySymbol == ObjectSymbol::LADDER || mySymbol == ObjectSymbol::ROPE);
+
+      if (destCenterY > myCenter.y && canClimb)
         return static_cast<sf::Vector2f>(mapAction(Action::MOVE_DOWN));
       else
         return static_cast<sf::Vector2f>(mapAction(Action::MOVE_UP));

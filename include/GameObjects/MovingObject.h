@@ -10,39 +10,36 @@ public:
 
   virtual void update(float deltaTime,const LevelData* levelData) override = 0;
 
-  virtual void handleCollision(Object& obj) override  = 0;
-  void setBoradPtr(Board& board);
-
+  
+  void handleCollision(Object & obj) override = 0;
   virtual void reset() override;
+  void handleCollision(Player & obj) override = 0;
+  void handleCollision(Enemy & obj) override = 0;
+  void handleCollision(Coin & obj) override = 0;
+  void handleCollision(Wall & obj) override = 0;
+  void handleCollision(Ground & obj) override = 0;
+  void handleCollision(Ladder & obj) override = 0;
+  void handleCollision(Rope & obj) override = 0;
+  
+  void setBoradPtr(Board& board);
 protected:
-  virtual void handleCollision(Player& obj) override = 0;
-  virtual void handleCollision(Enemy& obj) override = 0;
-  virtual void handleCollision(Coin& obj) override = 0;
-  virtual void handleCollision(Wall& obj) override = 0;
-  virtual void handleCollision(Ground& obj) override = 0;
-  virtual void handleCollision(Ladder& obj) override = 0;
-  virtual void handleCollision(Rope& obj) override = 0;
-
-  //delete no needs
-  sf::Vector2f getVelocity(const sf::Vector2f&, float speed, float deltaTime)const;
-
+  virtual sf::Vector2f getDirection() = 0;
+  sf::Vector2f getVelocity() const;
   sf::Vector2f getLastDir()const;
 
-  void setVelocity(const sf::Vector2f& v);
-  sf::Vector2f getVelocity() const;
+
 
   void onGround(); //reset velocity and ground
   void offGround();
-  bool isOnGround() const;
-
-  bool isOnLadder() const;
   void setOnLadder(bool flag);
 
-  bool isOnRope() const;
-  void OnRope();
+  void onRope();
   void offRope();
 
-  virtual sf::Vector2f getDirection() = 0;
+  bool isOnGround() const;
+  bool isOnLadder() const;
+  bool isOnRope() const;
+
   void move(float deltaTime);
   void setLastDir(const sf::Vector2f& dir );
   bool isOnObject(const Object& obj)const;
@@ -63,12 +60,32 @@ protected:
 
   Board* getBoard() const;
 private:
+  void updateFacingDirection(const sf::Vector2f& dir);
+  void setPosByVelocity(const sf::Vector2f& v,const float& dt);
+  void setVelocity(const sf::Vector2f& v);
+
+  float calculateXVelocity(const sf::Vector2f& dir)const;
+  float calculateYVelocity(const sf::Vector2f& dir,float deltaTime);
+
+  void onFalling();
+  void offFalling();
+
+  void resetFrameFlags();
+
+
+
   sf::Vector2f m_lastDir;
   sf::Vector2f m_velocity = { 0,0 };
+
+  // logic move
   bool m_onLadder = false;
   bool m_onRope = false;
   bool m_onGround = false;
+  
+  // for sounds
   bool m_faling = false;
   bool m_smashed = false;
+  
+  //data board
   Board* m_board = nullptr;
 };

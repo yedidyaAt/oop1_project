@@ -11,61 +11,23 @@ MovingObject::MovingObject(const sf::Vector2f& position, ObjectSymbol symbol, bo
 {
 }
 
-sf::Vector2f MovingObject::getVelocity(const sf::Vector2f& dir, float speed, float deltaTime) const
-{
-  return dir*speed*deltaTime;
-}
 
 void MovingObject::move(float deltaTime)
 {
-  if (deltaTime > 0.1f) deltaTime = 0.1f;
+  deltaTime = std::min(deltaTime, 0.1f); // 0.1 max time per fram case computer stuck 
 
-  // 1. מעתיקים את המהירות הנוכחית למשתנה מקומי לעבודה
-  sf::Vector2f currentVel = getVelocity();
-  sf::Vector2f dir = getDirection();
 
-  // 2. חישוב X
-  currentVel.x = dir.x * PhysicsConfig::SPEED;
+  sf::Vector2f newDir = getDirection();
+  sf::Vector2f newVelocity;
+  newVelocity.x = calculateXVelocity(newDir);
+  newVelocity.y = calculateYVelocity(newDir,deltaTime);
 
-  // 3. חישוב Y (שימוש בפונקציות בלבד!)
-  if (isOnLadder())
-  {
-    currentVel.y = dir.y * PhysicsConfig::SPEED;
-  }
-  else if (isOnRope())
-  {
-    m_faling = false;
-    currentVel.y = 0;
-  }
-  else
-  {
-    // כבידה
-    if (!isOnGround()) 
-      {
-        currentVel.y += PhysicsConfig::GRAVITY* deltaTime;
-        checkFalling(currentVel.y);
-      }
-    else {
-      currentVel.y = 0;
-      checkSmashed();
-    }
-  }
+  setVelocity(newVelocity);
 
-  // 4. עדכון המהירות בחזרה לאובייקט
-  setVelocity(currentVel);
+  updateFacingDirection(newDir);
+  setPosByVelocity(newVelocity,deltaTime);
 
-  // 5. תזוזה
-  setPos(getPos() + currentVel * deltaTime);
-
-  // 6. כיוון
-  if (dir.x != 0 || dir.y != 0) {
-    setLastDir(dir);
-  }
-
-  // 7. איפוס דגלים דרך פונקציות
-  offGround();
-  setOnLadder(false);
-  offRope();
+  resetFrameFlags();
 }
 
 sf::Vector2f MovingObject::getLastDir() const
@@ -109,7 +71,7 @@ bool MovingObject::isOnRope() const
 {
   return m_onRope;
 }
-void MovingObject::OnRope()
+void MovingObject::onRope()
 {
   m_onRope = true;
   m_velocity.y = 0;
@@ -122,21 +84,10 @@ void MovingObject::offRope()
 
 void MovingObject::setLastDir(const sf::Vector2f& dir)
 {
+  if (dir.x != 0 || dir.y != 0) {
   m_lastDir = dir;
+  }
 }
-
-//bool MovingObject::isOnObject(const Object& obj)const
-//{
-//  const auto& overlap = getBoundRec().findIntersection(obj.getBoundRec());
-//  
-//  float isOverlapMount = UiConfig::TILE_SIZE * 0.0f;
-//
-// if(overlap.has_value())
-//  if (overlap->size.x >= isOverlapMount)
-//    return true;
-//
-//  return false;
-//}
 
 bool MovingObject::isOnObject(const Object& obj) const
 {
@@ -179,55 +130,37 @@ bool MovingObject::isOnObject(const Object* obj) const
 
 bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryCondition)
 {
-  // 1. שליפת גבולות
   auto myBounds = getBoundRec();
   auto targetBounds = target.getBoundRec();
 
-  // 2. בחירת משתנים לפי הציר המבוקש (X או Y)
-  // אם isXAxis אמת -> עובדים על רוחב ומיקום X (לסולמות)
-  // אחרת -> עובדים על גובה ומיקום Y (לחבלים)
+   //x for ladders y for ropes
   float myPosVal = isXAxis ? myBounds.position.x : myBounds.position.y;
   float mySizeVal = isXAxis ? myBounds.size.x : myBounds.size.y;
 
   float targetPosVal = isXAxis ? targetBounds.position.x : targetBounds.position.y;
   float targetSizeVal = isXAxis ? targetBounds.size.x : targetBounds.size.y;
 
-  // 3. חישוב מרכזים ומרחק
   float myCenter = myPosVal + mySizeVal / 2.0f;
   float targetCenter = targetPosVal + targetSizeVal / 2.0f;
   float distance = std::abs(myCenter - targetCenter);
 
-  // 4. הגדרת ספים (Thresholds)
-  // טווח כניסה רחב (20% מגודל תא)
-  float entryThreshold = UiConfig::TILE_SIZE * PhysicsConfig::LADDER_SNAP_THRESHOLD;
-  // טווח "הידבקות" צר (כדי להשאיר את השחקן תפוס אם הוא כבר שם)
-  float stickThreshold = UiConfig::TILE_SIZE*0.1f;
+ 
+  float entryThreshold = UiConfig::TILE_SIZE * PhysicsConfig::SNAP_THRESHOLD;
 
-  // --- לוגיקה 1: תחזוקה (Stickiness) ---
-  // אם אנחנו כבר ממש קרובים למרכז, נשארים שם (מתעלמים מתנאי הכניסה)
-   if (distance < stickThreshold)
-    {
-      float newCoord = targetCenter - (mySizeVal / 2.0f);
-
-      if (isXAxis) setPos({ newCoord, getPos().y });
-      else         setPos({ getPos().x, newCoord });
-
-      return true; // בוצע שינוי
-    }
-  
-  // --- לוגיקה 2: כניסה (Entry) ---
   // נכנסים רק אם המרחק סביר וגם התנאי החיצוני (מקשים/מהירות) מתקיים
   if (entryCondition && distance < entryThreshold)
   {
     float newCoord = targetCenter - (mySizeVal / 2.0f);
 
-    if (isXAxis) setPos({ newCoord, getPos().y });
-    else         setPos({ getPos().x, newCoord });
+    if (isXAxis) 
+      setPos({ newCoord, getPos().y });
+    else         
+      setPos({ getPos().x, newCoord });
 
-    return true; // בוצע שינוי
+    return true; 
   }
 
-  return false; // לא בוצע שינוי
+  return false; 
 }
 
 void MovingObject::keepObjInsideMap()
@@ -305,6 +238,63 @@ Board* MovingObject::getBoard() const
     return m_board;
 }
 
+void MovingObject::updateFacingDirection(const sf::Vector2f& dir)
+{
+  setLastDir(dir);
+}
+
+void MovingObject::setPosByVelocity(const sf::Vector2f& v, const float& dt)
+{
+  setPos(getPos() + v * dt);
+}
+
+float MovingObject::calculateXVelocity(const sf::Vector2f& dir) const
+{
+  return dir.x * PhysicsConfig::SPEED;
+}
+
+float MovingObject::calculateYVelocity(const sf::Vector2f& dir,float deltaTime)
+{
+  if (isOnLadder())
+  {
+    return dir.y * PhysicsConfig::SPEED;
+  }
+
+  if (isOnRope())
+  {
+    offFalling();
+    return 0.0f; 
+  }
+
+  if (isOnGround())
+  {
+    checkSmashed();
+    return 0.0f;
+  }
+
+  // probebly we are falling
+  float newY = getVelocity().y + PhysicsConfig::GRAVITY * deltaTime;
+  checkFalling(newY);
+  return newY;
+}
+
+void MovingObject::onFalling()
+{
+  m_faling = true;
+}
+
+void MovingObject::offFalling()
+{
+  m_faling = false;
+}
+
+void MovingObject::resetFrameFlags()
+{
+  offGround();
+  setOnLadder(false);
+  offRope();
+}
+
 void MovingObject::setBoradPtr(Board& board)
 {
   m_board = &board;
@@ -318,9 +308,10 @@ void MovingObject::reset()
 
 void MovingObject::handleLadderLogic(const Object& ladder)
 {
+  // don't magnet if is passing near the ladder
   if (getLastDir().x != 0)
     return;
-  // תנאי כניסה: מנסה לעלות למעלה
+
   bool isTryingToClimb = (getLastDir().y != 0);
 
   // קריאה לפונקציה המתמטית על ציר X
@@ -335,17 +326,12 @@ void MovingObject::handleLadderLogic(const Object& ladder)
 
 void MovingObject::handleRopeLogic(const Object& rope)
 {
-  // תנאי כניסה:
-  // 1. לוחץ לצדדים (dir.x != 0)
-  // 2. יציב יחסית (לא נופל במהירות מטורפת)
-  bool sides = getLastDir().x != 0;
   bool stable = getVelocity().y == 0;
 
   // קריאה לפונקציה המתמטית על ציר Y
-  if (alignToCenter(rope, false, sides && stable))
+  if (alignToCenter(rope, false,stable))
   {
-    // אם הצלחנו להתיישר -> מפעילים מצב חבל
-    OnRope();
+    onRope();
   }
 }
 
@@ -359,7 +345,7 @@ void MovingObject::resolveOverlap(Object& obj)
 
   // --- Corner Correction (החלקה למנהרה) ---
   // אם ההתנגשות היא "קיר" (X < Y) אבל החפיפה האנכית קטנה מאוד
-  float cornerTolerance = UiConfig::TILE_SIZE* PhysicsConfig::LADDER_SNAP_THRESHOLD;
+  float cornerTolerance = UiConfig::TILE_SIZE* PhysicsConfig::SNAP_THRESHOLD;
 
   if (overlap->size.x < overlap->size.y)
   {
