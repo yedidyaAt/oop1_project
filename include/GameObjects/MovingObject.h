@@ -72,6 +72,9 @@ private:
 
   void resetFrameFlags();
 
+  bool slipperinessTester(const Object& obj);
+  void overlapExtractor(const Object& obj);
+
 
 
   sf::Vector2f m_lastDir;

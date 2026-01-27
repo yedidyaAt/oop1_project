@@ -145,7 +145,7 @@ bool MovingObject::alignToCenter(const Object& target, bool isXAxis, bool entryC
   float distance = std::abs(myCenter - targetCenter);
 
  
-  float entryThreshold = UiConfig::TILE_SIZE * PhysicsConfig::SNAP_THRESHOLD;
+  float entryThreshold = UiConfig::TILE_SIZE * PhysicsConfig::SNAP_CORNER_THRESHOLD;
 
   // נכנסים רק אם המרחק סביר וגם התנאי החיצוני (מקשים/מהירות) מתקיים
   if (entryCondition && distance < entryThreshold)
@@ -295,6 +295,91 @@ void MovingObject::resetFrameFlags()
   offRope();
 }
 
+bool MovingObject::slipperinessTester(const Object& obj)
+{
+  auto pBounds = getBoundRec();
+  auto oBounds = obj.getBoundRec();
+  auto overlap = pBounds.findIntersection(oBounds);
+
+  if (!overlap)
+    return false;
+
+  // --- Corner Correction (החלקה למנהרה) ---
+  // אם ההתנגשות היא "קיר" (X < Y) אבל החפיפה האנכית קטנה מאוד
+  float cornerTolerance = UiConfig::TILE_SIZE * PhysicsConfig::SNAP_CORNER_THRESHOLD;
+  float edgeTolerance = UiConfig::TILE_SIZE * PhysicsConfig::SNAP_EDGE_THRESHOLD;
+
+
+  if (overlap->size.x < overlap->size.y)// coming from sides
+  {
+    if (overlap->size.y < cornerTolerance) // if the overlap on y is litle like stuck whit the head
+    {
+      if (pBounds.position.y < oBounds.position.y) //if i colision with the bottom head
+        setPos({ getPos().x, getPos().y - overlap->size.y }); // החלקה למעלה
+      else
+        setPos({ getPos().x, getPos().y + overlap->size.y }); // החלקה למטה
+
+      return true;
+    }
+  }
+  else if (overlap->size.x > overlap->size.y) // התנגשות מלמעלה/למטה (רצפה/תקרה)
+  {
+    // בדיקת "פינה" - אם אני עומד על הרצפה אבל רק על חתיכה קטנה ממנה (פחות מה-tolerance)
+    if (overlap->size.x < edgeTolerance)
+    {
+      // אם אני נמצא מעל הבלוק (כלומר זו רצפה, לא תקרה)
+      if (pBounds.position.y < oBounds.position.y)
+      {
+        // giv the phisic to controle
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+void MovingObject::overlapExtractor(const Object& obj)
+{
+  auto pBounds = getBoundRec();
+  auto oBounds = obj.getBoundRec();
+  auto overlap = pBounds.findIntersection(oBounds);
+
+  if (!overlap)
+    return;
+
+  float pCenterX = pBounds.getCenter().x;
+  float oCenterX = oBounds.getCenter().x;
+  float pCenterY = pBounds.getCenter().y;
+  float oCenterY = oBounds.getCenter().y;
+
+
+  if (overlap->size.x < overlap->size.y)// coming from sides
+  {
+    if (pCenterX < oCenterX) // if i came from side right 
+      setPos({ getPos().x - overlap->size.x, getPos().y }); //move left and sitck to him
+    else
+      setPos({ getPos().x + overlap->size.x, getPos().y }); //move right and sitck to him
+
+  }
+  else // coming from up or down
+  {
+    if (pCenterY < oCenterY) // if i cam from top to down
+    {
+      setPos({ getPos().x, getPos().y - overlap->size.y }); // goin up
+      onGround();
+    }
+    else // if i cam from down to top
+    {
+      setPos({ getPos().x, getPos().y + overlap->size.y }); // goin down
+
+      sf::Vector2f v = getVelocity();
+      v.y = 0;
+      setVelocity(v);
+    }
+  }
+}
+
 void MovingObject::setBoradPtr(Board& board)
 {
   m_board = &board;
@@ -328,7 +413,7 @@ void MovingObject::handleRopeLogic(const Object& rope)
 {
   bool stable = getVelocity().y == 0;
 
-  // קריאה לפונקציה המתמטית על ציר Y
+   //קריאה לפונקציה המתמטית על ציר Y
   if (alignToCenter(rope, false,stable))
   {
     onRope();
@@ -337,65 +422,6 @@ void MovingObject::handleRopeLogic(const Object& rope)
 
 void MovingObject::resolveOverlap(Object& obj)
 {
-  auto pBounds = getBoundRec();
-  auto oBounds = obj.getBoundRec();
-  auto overlap = pBounds.findIntersection(oBounds);
-
-  if (!overlap) return;
-
-  // --- Corner Correction (החלקה למנהרה) ---
-  // אם ההתנגשות היא "קיר" (X < Y) אבל החפיפה האנכית קטנה מאוד
-  float cornerTolerance = UiConfig::TILE_SIZE* PhysicsConfig::SNAP_THRESHOLD;
-
-  if (overlap->size.x < overlap->size.y)
-  {
-    if (overlap->size.y < cornerTolerance)
-    {
-      // החלקה: דחיפה עדינה ב-Y במקום עצירה ב-X
-      if (pBounds.position.y < oBounds.position.y)
-        setPos({ getPos().x, getPos().y - overlap->size.y }); // החלקה למעלה
-      else
-        setPos({ getPos().x, getPos().y + overlap->size.y }); // החלקה למטה
-
-      return; // יצאנו! לא עוצרים מהירות אופקית
-    }
-  }
-
-  // --- פתרון התנגשות רגיל (Standard Collision) ---
-
-  // חישוב מרכזים ל-SFML 3
-  float pCenterX = pBounds.getCenter().x;
-  float oCenterX = oBounds.getCenter().x;
-  float pCenterY = pBounds.getCenter().y;
-  float oCenterY = oBounds.getCenter().y;
-
-  if (overlap->size.x < overlap->size.y)
-  {
-    // תיקון אופקי (X) - קיר
-    if (pCenterX < oCenterX)
-      setPos({ getPos().x - overlap->size.x, getPos().y });
-    else
-      setPos({ getPos().x + overlap->size.x, getPos().y });
-
-    // לא חובה לאפס מהירות X לשחקן, אבל אפשרי
-  }
-  else
-  {
-    // תיקון אנכי (Y) - רצפה או תקרה
-    if (pCenterY < oCenterY)
-    {
-      // רצפה
-      setPos({ getPos().x, getPos().y - overlap->size.y });
-      onGround();
-    }
-    else
-    {
-      // תקרה
-      setPos({ getPos().x, getPos().y + overlap->size.y });
-
-      sf::Vector2f v = getVelocity();
-      v.y = 0;
-      setVelocity(v);
-    }
-  }
+  if (!slipperinessTester(obj))
+    overlapExtractor(obj);
 }
