@@ -295,6 +295,18 @@ void MovingObject::resetFrameFlags()
   offRope();
 }
 
+void MovingObject::resetVelocity()
+{
+  setVelocity({ 0.f,0.f });
+}
+
+void MovingObject::resetAllFlags()
+{
+  m_faling = false;         
+  m_smashed = false;        
+  resetFrameFlags();
+}
+
 bool MovingObject::slipperinessTester(const Object& obj)
 {
   auto pBounds = getBoundRec();
@@ -387,6 +399,8 @@ void MovingObject::setBoradPtr(Board& board)
 
 void MovingObject::reset()
 {
+  resetVelocity();
+  resetAllFlags();
   resetStartPos();
   livenUp();
 }

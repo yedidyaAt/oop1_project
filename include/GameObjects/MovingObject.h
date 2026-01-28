@@ -9,10 +9,10 @@ public:
   MovingObject(const sf::Vector2f& position, ObjectSymbol symbol, bool isActive=true);
 
   virtual void update(float deltaTime,const LevelData* levelData) override = 0;
+  virtual void reset() override;
 
   
   void handleCollision(Object & obj) override = 0;
-  virtual void reset() override;
   void handleCollision(Player & obj) override = 0;
   void handleCollision(Enemy & obj) override = 0;
   void handleCollision(Coin & obj) override = 0;
@@ -48,9 +48,8 @@ protected:
   void handleLadderLogic(const Object& ladder);
   void handleRopeLogic(const Object& rope);
 
-  // התנגשות משודרגת עם החלקה לפינות
-  void resolveOverlap(Object& obj);
 
+  void resolveOverlap(Object& obj);
   bool alignToCenter(const Object& target, bool isXAxis, bool entryCondition);
 
   void keepObjInsideMap();
@@ -71,6 +70,9 @@ private:
   void offFalling();
 
   void resetFrameFlags();
+  void resetVelocity();
+  void resetAllFlags();
+
 
   bool slipperinessTester(const Object& obj);
   void overlapExtractor(const Object& obj);
